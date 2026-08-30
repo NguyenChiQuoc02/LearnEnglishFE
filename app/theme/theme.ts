@@ -1,24 +1,27 @@
 import { createTheme } from "@mui/material/styles";
+import { DEFAULT_PRIMARY_COLOR } from "@/app/constants/theme.constants";
 
-const theme = createTheme({
-  cssVariables: true,
-  typography: {
-    fontFamily: '"Times New Roman", Times, serif',
-  },
-  palette: {
-    primary: {
-      main: "#4f46e5",
+export function createAppTheme(primaryColor: string = DEFAULT_PRIMARY_COLOR) {
+  return createTheme({
+    cssVariables: true,
+    typography: {
+      fontFamily: '"Times New Roman", Times, serif',
     },
-    secondary: {
-      main: "#0ea5e9",
+    palette: {
+      primary: {
+        main: primaryColor,
+      },
+      secondary: {
+        main: "#0ea5e9",
+      },
+      background: {
+        default: "#f4f5f9",
+      },
     },
-    background: {
-      default: "#f4f5f9",
+    shape: {
+      borderRadius: 10,
     },
-  },
-  shape: {
-    borderRadius: 10,
-  },
-});
+  });
+}
 
-export default theme;
+export default createAppTheme();

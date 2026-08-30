@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { JwtResponse } from "@/app/types";
 
 const STORAGE_KEY = "learn-english-auth";
@@ -27,4 +28,19 @@ export function clearAuth() {
 
 export function isAdmin(auth: StoredAuth | null): boolean {
   return auth?.roles?.includes("ROLE_ADMIN") ?? false;
+}
+
+/**
+ * SSR-safe read of the stored auth. Always returns `null` on the first render
+ * (matching the server) and updates to the real value in an effect after
+ * mount, so components using it don't hit a hydration mismatch.
+ */
+export function useAuth(): StoredAuth | null {
+  const [auth, setAuth] = useState<StoredAuth | null>(null);
+
+  useEffect(() => {
+    setAuth(getAuth());
+  }, []);
+
+  return auth;
 }

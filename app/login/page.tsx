@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,6 +17,7 @@ import { isAdmin, saveAuth } from "@/app/utils/auth-storage";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ export default function LoginPage() {
       saveAuth(auth);
       router.push(isAdmin(auth) ? "/dashboard" : "/courses");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Đăng nhập thất bại");
+      setError(err instanceof Error ? err.message : t("login.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -50,17 +52,17 @@ export default function LoginPage() {
       <Card variant="outlined" sx={{ width: "100%", maxWidth: 400 }}>
         <CardContent sx={{ p: 4 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, mb: 0.5 }}>
-            Đăng nhập
+            {t("login.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Tiếp tục hành trình học từ vựng của bạn.
+            {t("login.subtitle")}
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2}>
               {error && <Alert severity="error">{error}</Alert>}
               <TextField
-                label="Tên đăng nhập"
+                label={t("login.fieldUsername")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -68,7 +70,7 @@ export default function LoginPage() {
                 autoFocus
               />
               <TextField
-                label="Mật khẩu"
+                label={t("login.fieldPassword")}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -82,15 +84,15 @@ export default function LoginPage() {
                 disabled={loading}
                 fullWidth
               >
-                {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                {loading ? t("login.submitting") : t("login.submit")}
               </Button>
             </Stack>
           </Box>
 
           <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
-            Chưa có tài khoản?{" "}
+            {t("login.noAccount")}{" "}
             <Link href="/register" style={{ fontWeight: 600 }}>
-              Đăng ký ngay
+              {t("login.registerNow")}
             </Link>
           </Typography>
         </CardContent>

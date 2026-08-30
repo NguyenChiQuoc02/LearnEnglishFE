@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -18,6 +19,7 @@ import type { CourseResponse, EnrollmentResponse } from "@/app/types";
 
 export default function CoursesCatalogPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [courses, setCourses] = useState<CourseResponse[] | null>(null);
   const [enrollments, setEnrollments] = useState<Record<number, EnrollmentResponse>>({});
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export default function CoursesCatalogPage() {
         );
       })
       .catch((err) =>
-        setError(err instanceof Error ? err.message : "Không tải được danh sách khóa học")
+        setError(err instanceof Error ? err.message : t("publicCourses.errorLoadCourses"))
       );
   }, []);
 
@@ -43,7 +45,7 @@ export default function CoursesCatalogPage() {
       const enrollment = await enrollCourse(courseId);
       setEnrollments((prev) => ({ ...prev, [courseId]: enrollment }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Đăng ký khóa học thất bại");
+      setError(err instanceof Error ? err.message : t("publicCourses.errorEnroll"));
     } finally {
       setEnrollingId(null);
     }
@@ -53,10 +55,10 @@ export default function CoursesCatalogPage() {
     <Stack spacing={3}>
       <Box>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Khóa học
+          {t("publicCourses.title")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Đăng ký khóa học và bắt đầu luyện từ vựng.
+          {t("publicCourses.subtitle")}
         </Typography>
       </Box>
 
@@ -106,10 +108,13 @@ export default function CoursesCatalogPage() {
                     overflow: "hidden",
                   }}
                 >
-                  {course.description ?? "Chưa có mô tả."}
+                  {course.description ?? t("publicCourses.noDescription")}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-                  {course.totalWords} từ vựng · Giáo viên: {course.teacherName}
+                  {t("publicCourses.wordsAndTeacher", {
+                    count: course.totalWords,
+                    teacher: course.teacherName,
+                  })}
                 </Typography>
 
                 <Box sx={{ mt: 2 }}>
@@ -120,7 +125,7 @@ export default function CoursesCatalogPage() {
                       startIcon={<PlayArrowRoundedIcon />}
                       onClick={() => router.push(`/learn/${course.id}`)}
                     >
-                      Bắt đầu học
+                      {t("publicCourses.startLearning")}
                     </Button>
                   ) : (
                     <Button
@@ -129,7 +134,7 @@ export default function CoursesCatalogPage() {
                       disabled={isEnrolling}
                       onClick={() => handleEnroll(course.id)}
                     >
-                      {isEnrolling ? "Đang đăng ký..." : "Đăng ký học"}
+                      {isEnrolling ? t("publicCourses.enrolling") : t("publicCourses.enroll")}
                     </Button>
                   )}
                 </Box>
@@ -139,7 +144,7 @@ export default function CoursesCatalogPage() {
         })}
 
         {courses?.length === 0 && (
-          <Typography color="text.secondary">Chưa có khóa học nào được công khai.</Typography>
+          <Typography color="text.secondary">{t("publicCourses.emptyNoCourses")}</Typography>
         )}
       </Box>
     </Stack>

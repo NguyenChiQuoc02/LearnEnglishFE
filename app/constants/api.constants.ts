@@ -28,6 +28,9 @@ export const API_ENDPOINTS = {
     COMPLETE: (sessionId: number | string) => `/learning-sessions/${sessionId}/complete`,
   },
   USERS: {
+    BASE: "/users",
     TEACHERS: "/users/teachers",
+    DETAIL: (id: number | string) => `/users/${id}`,
+    CHANGE_PASSWORD: "/users/me/password",
   },
 } as const;

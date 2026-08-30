@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,6 +16,7 @@ import { register } from "@/app/services/auth.service";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +29,7 @@ export default function RegisterPage() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp");
+      setError(t("register.errorMismatch"));
       return;
     }
 
@@ -36,7 +38,7 @@ export default function RegisterPage() {
       await register(username, email, password);
       router.push("/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Đăng ký thất bại");
+      setError(err instanceof Error ? err.message : t("register.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -56,17 +58,17 @@ export default function RegisterPage() {
       <Card variant="outlined" sx={{ width: "100%", maxWidth: 420 }}>
         <CardContent sx={{ p: 4 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, mb: 0.5 }}>
-            Tạo tài khoản
+            {t("register.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Bắt đầu học từ vựng tiếng Anh ngay hôm nay.
+            {t("register.subtitle")}
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2}>
               {error && <Alert severity="error">{error}</Alert>}
               <TextField
-                label="Tên đăng nhập"
+                label={t("register.fieldUsername")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -74,7 +76,7 @@ export default function RegisterPage() {
                 autoFocus
               />
               <TextField
-                label="Email"
+                label={t("register.fieldEmail")}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -82,7 +84,7 @@ export default function RegisterPage() {
                 fullWidth
               />
               <TextField
-                label="Mật khẩu"
+                label={t("register.fieldPassword")}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -90,7 +92,7 @@ export default function RegisterPage() {
                 fullWidth
               />
               <TextField
-                label="Xác nhận mật khẩu"
+                label={t("register.fieldConfirmPassword")}
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -104,15 +106,15 @@ export default function RegisterPage() {
                 disabled={loading}
                 fullWidth
               >
-                {loading ? "Đang tạo tài khoản..." : "Đăng ký"}
+                {loading ? t("register.submitting") : t("register.submit")}
               </Button>
             </Stack>
           </Box>
 
           <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
-            Đã có tài khoản?{" "}
+            {t("register.haveAccount")}{" "}
             <Link href="/login" style={{ fontWeight: 600 }}>
-              Đăng nhập
+              {t("register.loginNow")}
             </Link>
           </Typography>
         </CardContent>

@@ -59,8 +59,7 @@ export default function DashboardShell({
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: DRAWER_WIDTH,
-              borderRight: "1px solid",
-              borderColor: "divider",
+              border: "none",
             },
           }}
           open
@@ -79,6 +78,7 @@ export default function DashboardShell({
         }}
       >
         <Toolbar />
+        <Box sx={{ display: { xs: "block", sm: "none" }, height: 48 }} />
         <Box sx={{ p: { xs: 2, md: 3 } }}>{children}</Box>
       </Box>
     </Box>

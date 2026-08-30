@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
+import ThemeColorProvider from "./ThemeColorContext";
 import i18n from "@/app/utils/i18n";
 import { getLanguage } from "@/app/utils/language-storage";
 
@@ -23,10 +22,10 @@ export default function ThemeRegistry({
 
   return (
     <AppRouterCacheProvider options={{ key: "mui" }}>
-      <ThemeProvider theme={theme}>
+      <ThemeColorProvider>
         <CssBaseline />
         {children}
-      </ThemeProvider>
+      </ThemeColorProvider>
     </AppRouterCacheProvider>
   );
 }

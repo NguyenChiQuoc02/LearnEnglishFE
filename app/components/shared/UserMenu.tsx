@@ -15,12 +15,12 @@ import Typography from "@mui/material/Typography";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { useTranslation } from "react-i18next";
-import { clearAuth, getAuth } from "@/app/utils/auth-storage";
+import { clearAuth, useAuth } from "@/app/utils/auth-storage";
 
 export default function UserMenu() {
   const router = useRouter();
   const { t } = useTranslation();
-  const auth = getAuth();
+  const auth = useAuth();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -47,7 +47,15 @@ export default function UserMenu() {
     <>
       <Tooltip title={auth?.username ?? t("userMenu.account")}>
         <IconButton onClick={handleAvatarClick} sx={{ p: 0 }}>
-          <Avatar sx={{ width: 36, height: 36, bgcolor: "primary.main" }}>
+          <Avatar
+            sx={{
+              width: 36,
+              height: 36,
+              bgcolor: "primary.main",
+              border: "2px solid",
+              borderColor: "secondary.main",
+            }}
+          >
             {auth?.username?.[0]?.toUpperCase() ?? "?"}
           </Avatar>
         </IconButton>

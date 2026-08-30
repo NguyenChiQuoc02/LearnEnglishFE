@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -12,7 +15,7 @@ import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import type { SvgIconComponent } from "@mui/icons-material";
 
 type Stat = {
-  label: string;
+  labelKey: string;
   value: string;
   delta: string;
   icon: SvgIconComponent;
@@ -20,25 +23,25 @@ type Stat = {
 
 const stats: Stat[] = [
   {
-    label: "Active Students",
+    labelKey: "dashboardOverview.statActiveStudents",
     value: "1,284",
     delta: "+8.2%",
     icon: GroupRoundedIcon,
   },
   {
-    label: "Lessons Completed",
+    labelKey: "dashboardOverview.statLessonsCompleted",
     value: "3,920",
     delta: "+12.4%",
     icon: MenuBookRoundedIcon,
   },
   {
-    label: "New Vocabulary",
+    labelKey: "dashboardOverview.statNewVocabulary",
     value: "540",
     delta: "+3.1%",
     icon: SpellcheckRoundedIcon,
   },
   {
-    label: "Avg. Progress",
+    labelKey: "dashboardOverview.statAvgProgress",
     value: "76%",
     delta: "+2.0%",
     icon: TrendingUpRoundedIcon,
@@ -53,14 +56,15 @@ const courseProgress = [
 ];
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   return (
     <Stack spacing={3}>
       <Box>
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Welcome back 👋
+          {t("dashboardOverview.greeting")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Here&apos;s what&apos;s happening with your students today.
+          {t("dashboardOverview.subtitle")}
         </Typography>
       </Box>
 
@@ -75,8 +79,8 @@ export default function DashboardPage() {
           },
         }}
       >
-        {stats.map(({ label, value, delta, icon: Icon }) => (
-          <Card key={label} variant="outlined">
+        {stats.map(({ labelKey, value, delta, icon: Icon }) => (
+          <Card key={labelKey} variant="outlined">
             <CardContent>
               <Stack
                 direction="row"
@@ -99,7 +103,7 @@ export default function DashboardPage() {
                 </Box>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    {label}
+                    {t(labelKey)}
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     {value}
@@ -107,7 +111,7 @@ export default function DashboardPage() {
                 </Box>
               </Stack>
               <Chip
-                label={`${delta} this month`}
+                label={t("dashboardOverview.statDeltaSuffix", { delta })}
                 size="small"
                 color="success"
                 variant="outlined"
@@ -121,7 +125,7 @@ export default function DashboardPage() {
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            Course Progress
+            {t("dashboardOverview.courseProgressTitle")}
           </Typography>
           <Stack spacing={2.5}>
             {courseProgress.map(({ name, value }) => (

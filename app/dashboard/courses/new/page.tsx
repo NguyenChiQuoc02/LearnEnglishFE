@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -21,6 +22,7 @@ import { COURSE_LEVELS, COURSE_TYPES } from "@/app/constants/course.constants";
 
 export default function NewCoursePage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [teachers, setTeachers] = useState<TeacherResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -43,14 +45,14 @@ export default function NewCoursePage() {
     }
     listTeachers()
       .then(setTeachers)
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load teachers"));
-  }, [router]);
+      .catch((err) => setError(err instanceof Error ? err.message : t("coursesAdminNew.errorLoadTeachers")));
+  }, [router, t]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (!teacherId) {
-      setError("Please choose a teacher");
+      setError(t("coursesAdminNew.errorTeacherRequired"));
       return;
     }
     setLoading(true);
@@ -68,7 +70,7 @@ export default function NewCoursePage() {
       });
       router.push(`/dashboard/courses/${course.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create course");
+      setError(err instanceof Error ? err.message : t("coursesAdminNew.errorCreateCourse"));
     } finally {
       setLoading(false);
     }
@@ -77,7 +79,7 @@ export default function NewCoursePage() {
   return (
     <Stack spacing={3} sx={{ maxWidth: 640 }}>
       <Typography variant="h5" sx={{ fontWeight: 700 }}>
-        New course
+        {t("coursesAdminNew.title")}
       </Typography>
 
       <Card variant="outlined">
@@ -87,14 +89,14 @@ export default function NewCoursePage() {
               {error && <Alert severity="error">{error}</Alert>}
 
               <TextField
-                label="Title"
+                label={t("coursesAdminNew.fieldTitle")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
                 fullWidth
               />
               <TextField
-                label="Description"
+                label={t("coursesAdminNew.fieldDescription")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 multiline
@@ -103,7 +105,7 @@ export default function NewCoursePage() {
               />
               <TextField
                 select
-                label="Course type"
+                label={t("coursesAdminNew.fieldCourseType")}
                 value={courseType}
                 onChange={(e) => setCourseType(e.target.value)}
                 required
@@ -117,7 +119,7 @@ export default function NewCoursePage() {
               </TextField>
               <TextField
                 select
-                label="Level"
+                label={t("coursesAdminNew.fieldLevel")}
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
                 fullWidth
@@ -131,36 +133,36 @@ export default function NewCoursePage() {
               </TextField>
               <TextField
                 select
-                label="Teacher"
+                label={t("coursesAdminNew.fieldTeacher")}
                 value={teacherId}
                 onChange={(e) => setTeacherId(e.target.value)}
                 required
                 fullWidth
               >
-                {teachers.map((t) => (
-                  <MenuItem key={t.id} value={t.id}>
-                    {t.username} ({t.email})
+                {teachers.map((teacher) => (
+                  <MenuItem key={teacher.id} value={teacher.id}>
+                    {teacher.username} ({teacher.email})
                   </MenuItem>
                 ))}
               </TextField>
 
               <Stack direction="row" spacing={2}>
                 <TextField
-                  label="Words / session"
+                  label={t("coursesAdminNew.fieldWordsPerSession")}
                   type="number"
                   value={wordsPerSession}
                   onChange={(e) => setWordsPerSession(Number(e.target.value))}
                   fullWidth
                 />
                 <TextField
-                  label="Points / correct"
+                  label={t("coursesAdminNew.fieldPointsPerCorrect")}
                   type="number"
                   value={pointsPerCorrect}
                   onChange={(e) => setPointsPerCorrect(Number(e.target.value))}
                   fullWidth
                 />
                 <TextField
-                  label="Points / wrong"
+                  label={t("coursesAdminNew.fieldPointsPerWrong")}
                   type="number"
                   value={pointsPerWrong}
                   onChange={(e) => setPointsPerWrong(Number(e.target.value))}
@@ -172,11 +174,11 @@ export default function NewCoursePage() {
                 control={
                   <Switch checked={published} onChange={(e) => setPublished(e.target.checked)} />
                 }
-                label="Published"
+                label={t("coursesAdminNew.fieldPublished")}
               />
 
               <Button type="submit" variant="contained" size="large" disabled={loading}>
-                {loading ? "Creating..." : "Create course"}
+                {loading ? t("coursesAdminNew.submitting") : t("coursesAdminNew.submit")}
               </Button>
             </Stack>
           </Box>

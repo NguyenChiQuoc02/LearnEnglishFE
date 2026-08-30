@@ -9,6 +9,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
 
@@ -37,6 +38,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
           <Typography variant="h6" sx={{ fontWeight: 800, flexGrow: 1 }}>
             Learn English
           </Typography>
+          <LanguageSwitcher />
           <UserMenu />
         </Toolbar>
       </AppBar>

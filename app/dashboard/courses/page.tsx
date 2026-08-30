@@ -3,44 +3,66 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DataTable from "@/app/components/shared/DataTable";
+import type { DataTableColumn } from "@/app/components/shared/DataTable";
 import { listManagedCourses } from "@/app/services/course.service";
 import type { CourseResponse } from "@/app/types";
-import { getAuth } from "@/app/utils/auth-storage";
+import { useAuth } from "@/app/utils/auth-storage";
 
 export default function CoursesPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [courses, setCourses] = useState<CourseResponse[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const isAdmin = getAuth()?.roles?.includes("ROLE_ADMIN") ?? false;
+  const auth = useAuth();
+  const isAdmin = auth?.roles?.includes("ROLE_ADMIN") ?? false;
 
   useEffect(() => {
     listManagedCourses()
       .then(setCourses)
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load courses"));
-  }, []);
+      .catch((err) => setError(err instanceof Error ? err.message : t("coursesAdmin.errorLoadCourses")));
+  }, [t]);
+
+  const columns: DataTableColumn<CourseResponse>[] = [
+    {
+      key: "title",
+      header: t("coursesAdmin.columnTitle"),
+      render: (course) => <Typography sx={{ fontWeight: 600 }}>{course.title}</Typography>,
+    },
+    { key: "type", header: t("coursesAdmin.columnType"), render: (course) => course.courseType },
+    { key: "teacher", header: t("coursesAdmin.columnTeacher"), render: (course) => course.teacherName },
+    { key: "words", header: t("coursesAdmin.columnWords"), align: "right", render: (course) => course.totalWords },
+    {
+      key: "status",
+      header: t("coursesAdmin.columnStatus"),
+      render: (course) => (
+        <Chip
+          size="small"
+          label={course.published ? t("coursesAdmin.statusPublished") : t("coursesAdmin.statusDraft")}
+          color={course.published ? "success" : "default"}
+          variant="outlined"
+        />
+      ),
+    },
+  ];
 
   return (
     <Stack spacing={3}>
       <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h5" sx={{ fontWeight: 700 }}>
-            Courses
+            {t("coursesAdmin.title")}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {isAdmin ? "All courses" : "Courses you own"}
+            {isAdmin ? t("coursesAdmin.subtitleAll") : t("coursesAdmin.subtitleMine")}
           </Typography>
         </Box>
         {isAdmin && (
@@ -50,58 +72,25 @@ export default function CoursesPage() {
             variant="contained"
             startIcon={<AddRoundedIcon />}
           >
-            New course
+            {t("coursesAdmin.newCourse")}
           </Button>
         )}
       </Stack>
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Paper variant="outlined">
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Teacher</TableCell>
-              <TableCell align="right">Words</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {courses?.map((course) => (
-              <TableRow
-                key={course.id}
-                hover
-                onClick={() => router.push(`/dashboard/courses/${course.id}`)}
-                sx={{ cursor: "pointer" }}
-              >
-                <TableCell sx={{ fontWeight: 600 }}>{course.title}</TableCell>
-                <TableCell>{course.courseType}</TableCell>
-                <TableCell>{course.teacherName}</TableCell>
-                <TableCell align="right">{course.totalWords}</TableCell>
-                <TableCell>
-                  <Chip
-                    size="small"
-                    label={course.published ? "Published" : "Draft"}
-                    color={course.published ? "success" : "default"}
-                    variant="outlined"
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-            {courses?.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <Typography color="text.secondary" sx={{ py: 2, textAlign: "center" }}>
-                    No courses yet.
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Paper>
+      <DataTable
+        columns={columns}
+        rows={courses ?? []}
+        getRowId={(course) => course.id}
+        onRowClick={(course) => router.push(`/dashboard/courses/${course.id}`)}
+        emptyMessage={t("coursesAdmin.emptyNoCourses")}
+        noMatchMessage={t("coursesAdmin.emptyNoMatch")}
+        searchPlaceholder={t("coursesAdmin.searchPlaceholder")}
+        searchPredicate={(course, term) =>
+          course.title.toLowerCase().includes(term) || course.teacherName.toLowerCase().includes(term)
+        }
+      />
     </Stack>
   );
 }

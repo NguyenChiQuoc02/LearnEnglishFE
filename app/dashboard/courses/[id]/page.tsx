@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -48,6 +49,7 @@ import { COURSE_LEVELS, COURSE_TYPES } from "@/app/constants/course.constants";
 
 export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[id]">) {
   const { id } = use(props.params);
+  const { t } = useTranslation();
 
   const [course, setCourse] = useState<CourseResponse | null>(null);
   const [words, setWords] = useState<VocabularyItemResponse[]>([]);
@@ -61,8 +63,8 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
         setCourse(courseData);
         setWords(wordsData);
       })
-      .catch((err) => setLoadError(err instanceof Error ? err.message : "Failed to load course"));
-  }, [id]);
+      .catch((err) => setLoadError(err instanceof Error ? err.message : t("courseDetail.errorLoadCourse")));
+  }, [id, t]);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -83,7 +85,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
       });
       setCourse(updated);
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "Failed to save course");
+      setSaveError(err instanceof Error ? err.message : t("courseDetail.errorSaveCourse"));
     } finally {
       setSaving(false);
     }
@@ -105,14 +107,14 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
               {saveError && <Alert severity="error">{saveError}</Alert>}
 
               <TextField
-                label="Title"
+                label={t("courseDetail.fieldTitle")}
                 value={course.title}
                 onChange={(e) => setCourse({ ...course, title: e.target.value })}
                 required
                 fullWidth
               />
               <TextField
-                label="Description"
+                label={t("courseDetail.fieldDescription")}
                 value={course.description ?? ""}
                 onChange={(e) => setCourse({ ...course, description: e.target.value })}
                 multiline
@@ -121,7 +123,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
               />
               <TextField
                 select
-                label="Course type"
+                label={t("courseDetail.fieldCourseType")}
                 value={course.courseType}
                 onChange={(e) =>
                   setCourse({ ...course, courseType: e.target.value as CourseResponse["courseType"] })
@@ -136,7 +138,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
               </TextField>
               <TextField
                 select
-                label="Level"
+                label={t("courseDetail.fieldLevel")}
                 value={course.level ?? ""}
                 onChange={(e) =>
                   setCourse({
@@ -156,21 +158,21 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
 
               <Stack direction="row" spacing={2}>
                 <TextField
-                  label="Words / session"
+                  label={t("courseDetail.fieldWordsPerSession")}
                   type="number"
                   value={course.wordsPerSession}
                   onChange={(e) => setCourse({ ...course, wordsPerSession: Number(e.target.value) })}
                   fullWidth
                 />
                 <TextField
-                  label="Points / correct"
+                  label={t("courseDetail.fieldPointsPerCorrect")}
                   type="number"
                   value={course.pointsPerCorrect}
                   onChange={(e) => setCourse({ ...course, pointsPerCorrect: Number(e.target.value) })}
                   fullWidth
                 />
                 <TextField
-                  label="Points / wrong"
+                  label={t("courseDetail.fieldPointsPerWrong")}
                   type="number"
                   value={course.pointsPerWrong}
                   onChange={(e) => setCourse({ ...course, pointsPerWrong: Number(e.target.value) })}
@@ -185,11 +187,11 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
                     onChange={(e) => setCourse({ ...course, published: e.target.checked })}
                   />
                 }
-                label="Published"
+                label={t("courseDetail.fieldPublished")}
               />
 
               <Button type="submit" variant="contained" disabled={saving} sx={{ alignSelf: "flex-start" }}>
-                {saving ? "Saving..." : "Save changes"}
+                {saving ? t("common.saving") : t("courseDetail.saveChanges")}
               </Button>
             </Stack>
           </Box>
@@ -232,6 +234,7 @@ function VocabularySection({
   const [error, setError] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [editingItem, setEditingItem] = useState<VocabularyItemResponse | null>(null);
+  const { t } = useTranslation();
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -254,7 +257,7 @@ function VocabularySection({
       setImageUrl("");
       setAudioUrl("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add word");
+      setError(err instanceof Error ? err.message : t("courseDetail.vocabulary.errorAddWord"));
     } finally {
       setAdding(false);
     }
@@ -263,18 +266,18 @@ function VocabularySection({
   return (
     <Stack spacing={2}>
       <Typography variant="h6" sx={{ fontWeight: 700 }}>
-        Vocabulary ({words.length})
+        {t("courseDetail.vocabulary.title", { count: words.length })}
       </Typography>
 
       <Paper variant="outlined">
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Word</TableCell>
-              <TableCell>Phonetic</TableCell>
-              <TableCell>POS</TableCell>
-              <TableCell>Meaning</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>{t("courseDetail.vocabulary.columnWord")}</TableCell>
+              <TableCell>{t("courseDetail.vocabulary.columnPhonetic")}</TableCell>
+              <TableCell>{t("courseDetail.vocabulary.columnPos")}</TableCell>
+              <TableCell>{t("courseDetail.vocabulary.columnMeaning")}</TableCell>
+              <TableCell align="right">{t("common.actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -285,7 +288,7 @@ function VocabularySection({
                 <TableCell>{w.partOfSpeech}</TableCell>
                 <TableCell>{w.meaning}</TableCell>
                 <TableCell align="right">
-                  <Tooltip title="Edit word">
+                  <Tooltip title={t("courseDetail.vocabulary.editWordTooltip")}>
                     <IconButton size="small" onClick={() => setEditingItem(w)}>
                       <EditRoundedIcon fontSize="small" />
                     </IconButton>
@@ -297,7 +300,7 @@ function VocabularySection({
               <TableRow>
                 <TableCell colSpan={5}>
                   <Typography color="text.secondary" sx={{ py: 2, textAlign: "center" }}>
-                    No vocabulary yet.
+                    {t("courseDetail.vocabulary.emptyNoVocabulary")}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -309,54 +312,54 @@ function VocabularySection({
       <Card variant="outlined">
         <CardContent>
           <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-            Add a word
+            {t("courseDetail.vocabulary.addWordTitle")}
           </Typography>
           <Box component="form" onSubmit={handleAdd}>
             <Stack spacing={2}>
               {error && <Alert severity="error">{error}</Alert>}
               <Stack direction="row" spacing={2}>
                 <TextField
-                  label="Word"
+                  label={t("courseDetail.vocabulary.fieldWord")}
                   value={word}
                   onChange={(e) => setWord(e.target.value)}
                   required
                   fullWidth
                 />
                 <TextField
-                  label="Phonetic"
+                  label={t("courseDetail.vocabulary.fieldPhonetic")}
                   value={phonetic}
                   onChange={(e) => setPhonetic(e.target.value)}
                   fullWidth
                 />
                 <TextField
-                  label="Part of speech"
+                  label={t("courseDetail.vocabulary.fieldPartOfSpeech")}
                   value={partOfSpeech}
                   onChange={(e) => setPartOfSpeech(e.target.value)}
                   fullWidth
                 />
               </Stack>
               <TextField
-                label="Meaning"
+                label={t("courseDetail.vocabulary.fieldMeaning")}
                 value={meaning}
                 onChange={(e) => setMeaning(e.target.value)}
                 fullWidth
               />
               <Stack direction="row" spacing={2}>
                 <TextField
-                  label="Image URL"
+                  label={t("courseDetail.vocabulary.fieldImageUrl")}
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   fullWidth
                 />
                 <TextField
-                  label="Audio URL"
+                  label={t("courseDetail.vocabulary.fieldAudioUrl")}
                   value={audioUrl}
                   onChange={(e) => setAudioUrl(e.target.value)}
                   fullWidth
                 />
               </Stack>
               <Button type="submit" variant="contained" disabled={adding} sx={{ alignSelf: "flex-start" }}>
-                {adding ? "Adding..." : "Add word"}
+                {adding ? t("courseDetail.vocabulary.adding") : t("courseDetail.vocabulary.addWord")}
               </Button>
             </Stack>
           </Box>
@@ -401,6 +404,7 @@ function EditVocabularyDialog({
   });
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const { t } = useTranslation();
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -410,7 +414,7 @@ function EditVocabularyDialog({
       const updated = await updateVocabularyItem(courseId, item.id, form);
       onSaved(updated);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update word");
+      setError(err instanceof Error ? err.message : t("courseDetail.vocabulary.errorUpdateWord"));
     } finally {
       setSaving(false);
     }
@@ -418,59 +422,59 @@ function EditVocabularyDialog({
 
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit word</DialogTitle>
+      <DialogTitle>{t("courseDetail.vocabulary.editDialogTitle")}</DialogTitle>
       <Box component="form" onSubmit={handleSave}>
         <DialogContent>
           <Stack spacing={2}>
             {error && <Alert severity="error">{error}</Alert>}
             <Stack direction="row" spacing={2}>
               <TextField
-                label="Word"
+                label={t("courseDetail.vocabulary.fieldWord")}
                 value={form.word}
                 onChange={(e) => setForm({ ...form, word: e.target.value })}
                 required
                 fullWidth
               />
               <TextField
-                label="Phonetic"
+                label={t("courseDetail.vocabulary.fieldPhonetic")}
                 value={form.phonetic}
                 onChange={(e) => setForm({ ...form, phonetic: e.target.value })}
                 fullWidth
               />
               <TextField
-                label="Part of speech"
+                label={t("courseDetail.vocabulary.fieldPartOfSpeech")}
                 value={form.partOfSpeech}
                 onChange={(e) => setForm({ ...form, partOfSpeech: e.target.value })}
                 fullWidth
               />
             </Stack>
             <TextField
-              label="Meaning"
+              label={t("courseDetail.vocabulary.fieldMeaning")}
               value={form.meaning}
               onChange={(e) => setForm({ ...form, meaning: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Example sentence"
+              label={t("courseDetail.vocabulary.fieldExampleSentence")}
               value={form.exampleSentence}
               onChange={(e) => setForm({ ...form, exampleSentence: e.target.value })}
               fullWidth
             />
             <TextField
-              label="Example translation"
+              label={t("courseDetail.vocabulary.fieldExampleTranslation")}
               value={form.exampleTranslation}
               onChange={(e) => setForm({ ...form, exampleTranslation: e.target.value })}
               fullWidth
             />
             <Stack direction="row" spacing={2}>
               <TextField
-                label="Image URL"
+                label={t("courseDetail.vocabulary.fieldImageUrl")}
                 value={form.imageUrl}
                 onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                 fullWidth
               />
               <TextField
-                label="Audio URL"
+                label={t("courseDetail.vocabulary.fieldAudioUrl")}
                 value={form.audioUrl}
                 onChange={(e) => setForm({ ...form, audioUrl: e.target.value })}
                 fullWidth
@@ -480,10 +484,10 @@ function EditVocabularyDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} disabled={saving}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button type="submit" variant="contained" disabled={saving}>
-            {saving ? "Saving..." : "Save"}
+            {saving ? t("common.saving") : t("common.save")}
           </Button>
         </DialogActions>
       </Box>
@@ -495,17 +499,18 @@ function StudentsSection({ courseId }: { courseId: string }) {
   const [students, setStudents] = useState<CourseStudentResponse[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<CourseStudentResponse | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     listCourseStudents(courseId)
       .then(setStudents)
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load students"));
-  }, [courseId]);
+      .catch((err) => setError(err instanceof Error ? err.message : t("courseDetail.students.errorLoadStudents")));
+  }, [courseId, t]);
 
   return (
     <Stack spacing={2}>
       <Typography variant="h6" sx={{ fontWeight: 700 }}>
-        Students {students ? `(${students.length})` : ""}
+        {t("courseDetail.students.title")} {students ? `(${students.length})` : ""}
       </Typography>
 
       {error && <Alert severity="error">{error}</Alert>}
@@ -514,12 +519,12 @@ function StudentsSection({ courseId }: { courseId: string }) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell align="right">Score</TableCell>
-              <TableCell align="right">Words learned</TableCell>
-              <TableCell>Last studied</TableCell>
+              <TableCell>{t("courseDetail.students.columnUsername")}</TableCell>
+              <TableCell>{t("courseDetail.students.columnEmail")}</TableCell>
+              <TableCell>{t("courseDetail.students.columnStatus")}</TableCell>
+              <TableCell align="right">{t("courseDetail.students.columnScore")}</TableCell>
+              <TableCell align="right">{t("courseDetail.students.columnWordsLearned")}</TableCell>
+              <TableCell>{t("courseDetail.students.columnLastStudied")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -551,7 +556,7 @@ function StudentsSection({ courseId }: { courseId: string }) {
               <TableRow>
                 <TableCell colSpan={6}>
                   <Typography color="text.secondary" sx={{ py: 2, textAlign: "center" }}>
-                    No students enrolled yet.
+                    {t("courseDetail.students.emptyNoStudents")}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -591,16 +596,17 @@ function StudentHistoryDialog({
 }) {
   const [sessions, setSessions] = useState<LearningSessionSummaryResponse[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     listStudentSessions(courseId, student.userId)
       .then(setSessions)
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load history"));
-  }, [courseId, student.userId]);
+      .catch((err) => setError(err instanceof Error ? err.message : t("courseDetail.students.errorLoadHistory")));
+  }, [courseId, student.userId, t]);
 
   return (
     <Dialog open onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Lịch sử học của {student.username}</DialogTitle>
+      <DialogTitle>{t("courseDetail.students.historyDialogTitle", { username: student.username })}</DialogTitle>
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
         {!sessions && !error && (
@@ -612,12 +618,12 @@ function StudentHistoryDialog({
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>Bắt đầu</TableCell>
-                <TableCell>Trạng thái</TableCell>
-                <TableCell align="right">Tổng từ</TableCell>
-                <TableCell align="right">Đúng</TableCell>
-                <TableCell align="right">Sai</TableCell>
-                <TableCell align="right">Điểm</TableCell>
+                <TableCell>{t("courseDetail.students.historyColumnStarted")}</TableCell>
+                <TableCell>{t("courseDetail.students.historyColumnStatus")}</TableCell>
+                <TableCell align="right">{t("courseDetail.students.historyColumnTotalWords")}</TableCell>
+                <TableCell align="right">{t("courseDetail.students.historyColumnCorrect")}</TableCell>
+                <TableCell align="right">{t("courseDetail.students.historyColumnWrong")}</TableCell>
+                <TableCell align="right">{t("courseDetail.students.historyColumnScore")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -642,7 +648,7 @@ function StudentHistoryDialog({
                 <TableRow>
                   <TableCell colSpan={6}>
                     <Typography color="text.secondary" sx={{ py: 2, textAlign: "center" }}>
-                      Chưa có phiên học nào.
+                      {t("courseDetail.students.emptyNoSessions")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -652,7 +658,7 @@ function StudentHistoryDialog({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Đóng</Button>
+        <Button onClick={onClose}>{t("courseDetail.students.close")}</Button>
       </DialogActions>
     </Dialog>
   );

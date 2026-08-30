@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
@@ -122,6 +123,7 @@ type Feedback =
 // Self-contained preview used on the marketing homepage — no login/API required.
 function DemoLearningSession() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [wordIndex, setWordIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [score, setScore] = useState(0);
@@ -220,7 +222,7 @@ function DemoLearningSession() {
           disabled={feedback.state !== "idle"}
           sx={{ bgcolor: "white", whiteSpace: "nowrap" }}
         >
-          I don&apos;t know
+          {t("learnSession.dontKnowButton")}
         </Button>
       }
     >
@@ -234,7 +236,7 @@ function DemoLearningSession() {
         disabled={feedback.state !== "idle"}
         fullWidth
         autoFocus
-        placeholder="Gõ từ tiếng Anh..."
+        placeholder={t("learnSession.typePlaceholder")}
         slotProps={{
           input: {
             sx: { textTransform: "uppercase", fontSize: 20, fontWeight: 700, bgcolor: "white" },
@@ -278,10 +280,10 @@ function DemoLearningSession() {
           </Stack>
           <Stack direction="row" spacing={1.5}>
             <Button startIcon={<AutoFixHighRoundedIcon />} variant="outlined" onClick={useHint} sx={{ bgcolor: "white" }}>
-              Hint
+              {t("learnSession.hintButton")}
             </Button>
             <Button variant="contained" onClick={submitAnswer} disabled={!answer.trim()}>
-              Kiểm tra
+              {t("learnSession.checkButton")}
             </Button>
           </Stack>
         </>
@@ -310,6 +312,7 @@ function DemoLearningSession() {
 // /learning-sessions/{id}/hint instead of being derived client-side.
 function RealLearningSession({ courseId }: { courseId: string }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [course, setCourse] = useState<CourseResponse | null>(null);
   const [session, setSession] = useState<StartSessionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -334,8 +337,8 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         setSession(sessionRes);
         setCourse(courseRes);
       })
-      .catch((err) => setError(err instanceof Error ? err.message : "Không thể bắt đầu bài học"));
-  }, [courseId, router]);
+      .catch((err) => setError(err instanceof Error ? err.message : t("learnSession.errorStartSession")));
+  }, [courseId, router, t]);
 
   const words: SessionWordResponse[] = session?.words ?? [];
   const currentWord = words[wordIndex];
@@ -351,8 +354,8 @@ function RealLearningSession({ courseId }: { courseId: string }) {
     if (!isSessionComplete || !session || completion) return;
     completeSession(session.sessionId)
       .then(setCompletion)
-      .catch((err) => setError(err instanceof Error ? err.message : "Không thể hoàn thành bài học"));
-  }, [isSessionComplete, session, completion]);
+      .catch((err) => setError(err instanceof Error ? err.message : t("learnSession.errorCompleteSession")));
+  }, [isSessionComplete, session, completion, t]);
 
   // Enter continues to the next word once feedback for the current one is showing —
   // the answer field is disabled at that point, so its own onKeyDown won't fire.
@@ -426,7 +429,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Không thể ghi nhận câu trả lời");
+      setError(err instanceof Error ? err.message : t("learnSession.errorSubmitAnswer"));
     } finally {
       setSubmitting(false);
     }
@@ -438,7 +441,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         <Stack spacing={2} sx={{ alignItems: "center", textAlign: "center" }}>
           <Typography color="error">{error}</Typography>
           <Button variant="contained" onClick={() => router.push("/courses")}>
-            Quay lại danh sách khóa học
+            {t("learnSession.backToCoursesButton")}
           </Button>
         </Stack>
       </Box>
@@ -479,7 +482,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
           <Box
             component="img"
             src={currentWord.imageUrl}
-            alt="minh họa"
+            alt={t("learnSession.illustrationAlt")}
             sx={{ maxWidth: "100%", maxHeight: 90, borderRadius: 1 }}
           />
         ) : (
@@ -498,7 +501,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
           disabled={feedback.state !== "idle" || submitting}
           sx={{ bgcolor: "white", whiteSpace: "nowrap" }}
         >
-          I don&apos;t know
+          {t("learnSession.dontKnowButton")}
         </Button>
       }
     >
@@ -512,7 +515,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         disabled={feedback.state !== "idle" || submitting}
         fullWidth
         autoFocus
-        placeholder="Gõ từ tiếng Anh..."
+        placeholder={t("learnSession.typePlaceholder")}
         slotProps={{
           input: {
             sx: { textTransform: "uppercase", fontSize: 20, fontWeight: 700, bgcolor: "white" },
@@ -530,7 +533,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         <>
           <VirtualKeyboard onKeyPress={appendLetter} onBackspace={backspace} disabled={submitting} />
           <Stack direction="row" spacing={1.5}>
-            <Tooltip title="Hiển thị thêm 1 ký tự của từ cần gõ">
+            <Tooltip title={t("learnSession.tooltipHint")}>
               <span>
                 <Button
                   startIcon={<AutoFixHighRoundedIcon />}
@@ -539,12 +542,12 @@ function RealLearningSession({ courseId }: { courseId: string }) {
                   disabled={submitting}
                   sx={{ bgcolor: "white" }}
                 >
-                  Hint
+                  {t("learnSession.hintButton")}
                 </Button>
               </span>
             </Tooltip>
             <Button variant="contained" onClick={() => submitAnswer(false)} disabled={!answer.trim() || submitting}>
-              {submitting ? "Đang kiểm tra..." : "Kiểm tra"}
+              {submitting ? t("learnSession.checking") : t("learnSession.checkButton")}
             </Button>
           </Stack>
         </>
@@ -580,19 +583,20 @@ function FeedbackBanner({
   correctWord?: string;
   onContinue: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Stack spacing={1.5}>
       <Box sx={{ bgcolor: correct ? "#d8f5d0" : "#fbd8d8", borderRadius: 2, p: 2 }}>
         <Typography sx={{ fontWeight: 700, color: correct ? "#2b7a2b" : "#b3261e" }}>
           {correct
-            ? `Chính xác! +${points} điểm`
-            : `${skipped ? "Bạn đã bỏ qua." : "Chưa đúng."} Đáp án: `}
+            ? t("learnSession.correctFeedback", { points })
+            : `${skipped ? t("learnSession.skippedNotice") : t("learnSession.wrongNotice")} ${t("learnSession.answerLabel")}`}
           {!correct && <strong>{correctWord}</strong>}
-          {!correct && ` (${points} điểm)`}
+          {!correct && t("learnSession.pointsSuffix", { points })}
         </Typography>
       </Box>
       <Button variant="contained" onClick={onContinue}>
-        Tiếp tục
+        {t("learnSession.continueButton")}
       </Button>
     </Stack>
   );
@@ -613,6 +617,7 @@ function SessionCompleteScreen({
   onBack: () => void;
   loading?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -637,24 +642,24 @@ function SessionCompleteScreen({
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: 800 }}>
-          Hoàn thành bài học!
+          {t("learnSession.completeTitle")}
         </Typography>
         <Typography variant="body1" color="text.secondary">
           {title}
         </Typography>
         <Stack direction="row" spacing={2} sx={{ justifyContent: "center", py: 1 }}>
-          <Chip color="success" label={`Đúng: ${correctCount}`} />
-          <Chip color="error" label={`Sai: ${wrongCount}`} />
+          <Chip color="success" label={t("learnSession.correctChipLabel", { count: correctCount })} />
+          <Chip color="error" label={t("learnSession.wrongChipLabel", { count: wrongCount })} />
         </Stack>
         {loading ? (
           <CircularProgress size={28} sx={{ alignSelf: "center" }} />
         ) : (
           <Typography variant="h4" sx={{ fontWeight: 800, color: "#1ba9b8" }}>
-            {score} điểm
+            {t("learnSession.scoreLabel", { score })}
           </Typography>
         )}
         <Button variant="contained" size="large" onClick={onBack}>
-          Quay lại
+          {t("learnSession.backButton")}
         </Button>
       </Stack>
     </Box>
@@ -686,6 +691,7 @@ function SessionScreen({
   sideActions?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fdf6e3", display: "flex", flexDirection: "column" }}>
       <Box sx={{ bgcolor: "#a7e3ee", px: 3, py: 1.5 }}>
@@ -695,12 +701,12 @@ function SessionScreen({
             {headerTitle}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Bàn phím">
+          <Tooltip title={t("learnSession.tooltipKeyboard")}>
             <IconButton size="small" sx={{ bgcolor: "white" }}>
               <KeyboardRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Thoát">
+          <Tooltip title={t("learnSession.tooltipExit")}>
             <IconButton size="small" sx={{ bgcolor: "white" }} onClick={onExit}>
               <CloseRoundedIcon fontSize="small" />
             </IconButton>
@@ -755,7 +761,7 @@ function SessionScreen({
               <Chip label={`(${partOfSpeech})`} sx={{ bgcolor: "#5fd9c9", color: "white", fontWeight: 700 }} />
             )}
             {onSpeak && (
-              <Tooltip title="Nghe phát âm">
+              <Tooltip title={t("learnSession.tooltipListen")}>
                 <IconButton size="small" onClick={onSpeak} sx={{ bgcolor: "white", boxShadow: 1 }}>
                   <VolumeUpRoundedIcon fontSize="small" sx={{ color: "#1ba9b8" }} />
                 </IconButton>
@@ -766,7 +772,7 @@ function SessionScreen({
 
         <Stack spacing={1.5} sx={{ flexGrow: 1, maxWidth: 520 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, letterSpacing: 1 }}>
-            ENGLISH
+            {t("learnSession.englishLabel")}
           </Typography>
           {children}
         </Stack>
