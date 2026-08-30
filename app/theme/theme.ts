@@ -2,6 +2,9 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   cssVariables: true,
+  typography: {
+    fontFamily: '"Times New Roman", Times, serif',
+  },
   palette: {
     primary: {
       main: "#4f46e5",

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { getAuth, isAdmin } from "@/app/utils/auth-storage";
 
 const DRAWER_WIDTH = 260;
 
@@ -15,6 +17,16 @@ export default function DashboardShell({
   children: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const auth = getAuth();
+    if (!auth) {
+      router.replace("/login");
+    } else if (!isAdmin(auth)) {
+      router.replace("/courses");
+    }
+  }, [router]);
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>

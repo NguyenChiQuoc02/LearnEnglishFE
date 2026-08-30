@@ -1,7 +1,6 @@
 "use client";
 
 import AppBar from "@mui/material/AppBar";
-import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -12,8 +11,13 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
+import UserMenu from "@/app/components/shared/UserMenu";
 
 export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
+  const { t } = useTranslation();
+
   return (
     <AppBar
       position="fixed"
@@ -37,7 +41,7 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
 
         <TextField
           size="small"
-          placeholder="Search lessons, students…"
+          placeholder={t("dashboardHeader.searchPlaceholder")}
           sx={{
             display: { xs: "none", md: "block" },
             width: 320,
@@ -56,7 +60,7 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <Tooltip title="Notifications">
+        <Tooltip title={t("dashboardHeader.notifications")}>
           <IconButton color="inherit">
             <Badge badgeContent={3} color="error">
               <NotificationsRoundedIcon />
@@ -64,11 +68,9 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Account">
-          <Avatar sx={{ width: 36, height: 36, bgcolor: "primary.main" }}>
-            Q
-          </Avatar>
-        </Tooltip>
+        <LanguageSwitcher />
+
+        <UserMenu />
       </Toolbar>
     </AppBar>
   );

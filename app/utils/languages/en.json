@@ -1,0 +1,45 @@
+{
+  "languageSwitcher": {
+    "label": "Language"
+  },
+  "landing": {
+    "brand": "Learn English",
+    "login": "Log in",
+    "register": "Sign up",
+    "heroChip": "A smarter vocabulary learning platform",
+    "heroTitle": "Learn English vocabulary every day, the right way",
+    "heroDescription": "Enroll in courses built by teachers, practice typing words with images and pronunciation, earn points and climb the leaderboard with classmates in every course.",
+    "ctaStart": "Start for free",
+    "ctaHaveAccount": "I already have an account",
+    "track": {
+      "vocabularyName": "Vocabulary",
+      "vocabularyDescription": "Learn vocabulary with images, pronunciation, and live typing practice.",
+      "toeicName": "TOEIC",
+      "toeicDescription": "Vocabulary and practice organized by TOEIC exam topics.",
+      "ieltsName": "IELTS",
+      "ieltsDescription": "Expand your academic vocabulary for the IELTS exam.",
+      "vstepName": "VSTEP",
+      "vstepDescription": "Prepare vocabulary for the VSTEP English proficiency exam."
+    },
+    "rankingTitle": "Leaderboard ranked by score in every course",
+    "rankingDescription": "Every set of 10 words: a correct answer is +10 points, a wrong answer is -2 points. Your accumulated score decides your position on the course leaderboard.",
+    "rankingCta": "Try a sample lesson"
+  },
+  "dashboardHeader": {
+    "searchPlaceholder": "Search courses, students…",
+    "notifications": "Notifications"
+  },
+  "dashboardNav": {
+    "dashboard": "Dashboard",
+    "courses": "Courses",
+    "vocabulary": "Vocabulary",
+    "students": "Students",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "userMenu": {
+    "account": "Account",
+    "profile": "Profile",
+    "logout": "Log out"
+  }
+}

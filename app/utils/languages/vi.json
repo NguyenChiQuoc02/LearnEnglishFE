@@ -1,0 +1,45 @@
+{
+  "languageSwitcher": {
+    "label": "Ngôn ngữ"
+  },
+  "landing": {
+    "brand": "Learn English",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "heroChip": "Nền tảng học từ vựng thông minh",
+    "heroTitle": "Học từ vựng tiếng Anh mỗi ngày, đúng phương pháp",
+    "heroDescription": "Đăng ký khóa học do giáo viên xây dựng, luyện gõ từ kèm hình ảnh và phát âm, tích điểm và leo hạng cùng bạn học trong từng khóa học.",
+    "ctaStart": "Bắt đầu miễn phí",
+    "ctaHaveAccount": "Tôi đã có tài khoản",
+    "track": {
+      "vocabularyName": "Vocabulary",
+      "vocabularyDescription": "Học từ vựng với hình ảnh, phát âm và gõ từ trực tiếp.",
+      "toeicName": "TOEIC",
+      "toeicDescription": "Từ vựng và luyện tập theo chủ đề thi TOEIC.",
+      "ieltsName": "IELTS",
+      "ieltsDescription": "Mở rộng vốn từ học thuật cho kỳ thi IELTS.",
+      "vstepName": "VSTEP",
+      "vstepDescription": "Chuẩn bị từ vựng cho kỳ thi năng lực tiếng Anh VSTEP."
+    },
+    "rankingTitle": "Xếp hạng theo điểm số trong từng khóa học",
+    "rankingDescription": "Mỗi lượt học 10 từ: trả lời đúng +10 điểm, trả lời sai -2 điểm. Điểm tích lũy quyết định vị trí của bạn trên bảng xếp hạng khóa học.",
+    "rankingCta": "Xem thử bài học"
+  },
+  "dashboardHeader": {
+    "searchPlaceholder": "Tìm khóa học, học viên…",
+    "notifications": "Thông báo"
+  },
+  "dashboardNav": {
+    "dashboard": "Bảng điều khiển",
+    "courses": "Khóa học",
+    "vocabulary": "Từ vựng",
+    "students": "Học viên",
+    "reports": "Báo cáo",
+    "settings": "Cài đặt"
+  },
+  "userMenu": {
+    "account": "Tài khoản",
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất"
+  }
+}

@@ -1,69 +1,171 @@
-import Image from "next/image";
+"use client";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import SpellcheckRoundedIcon from "@mui/icons-material/SpellcheckRounded";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import RecordVoiceOverRoundedIcon from "@mui/icons-material/RecordVoiceOverRounded";
+import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
+import type { SvgIconComponent } from "@mui/icons-material";
+import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
+
+type CourseTrack = {
+  nameKey: "vocabularyName" | "toeicName" | "ieltsName" | "vstepName";
+  descriptionKey:
+    | "vocabularyDescription"
+    | "toeicDescription"
+    | "ieltsDescription"
+    | "vstepDescription";
+  icon: SvgIconComponent;
+};
+
+const tracks: CourseTrack[] = [
+  {
+    nameKey: "vocabularyName",
+    descriptionKey: "vocabularyDescription",
+    icon: SpellcheckRoundedIcon,
+  },
+  {
+    nameKey: "toeicName",
+    descriptionKey: "toeicDescription",
+    icon: MenuBookRoundedIcon,
+  },
+  {
+    nameKey: "ieltsName",
+    descriptionKey: "ieltsDescription",
+    icon: RecordVoiceOverRoundedIcon,
+  },
+  {
+    nameKey: "vstepName",
+    descriptionKey: "vstepDescription",
+    icon: EmojiEventsRoundedIcon,
+  },
+];
 
 export default function Home() {
+  const { t } = useTranslation();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+      <AppBar position="static" elevation={0} color="transparent">
+        <Toolbar sx={{ py: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, flexGrow: 1 }}>
+            {t("landing.brand")}
+          </Typography>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+            <LanguageSwitcher />
+            <Button component={Link} href="/login" variant="text">
+              {t("landing.login")}
+            </Button>
+            <Button component={Link} href="/register" variant="contained">
+              {t("landing.register")}
+            </Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
+
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+        <Stack spacing={3} sx={{ maxWidth: 640 }}>
+          <Chip
+            label={t("landing.heroChip")}
+            color="primary"
+            variant="outlined"
+            sx={{ alignSelf: "flex-start", fontWeight: 600 }}
+          />
+          <Typography variant="h2" sx={{ fontWeight: 800, fontSize: { xs: 34, md: 48 } }}>
+            {t("landing.heroTitle")}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ fontSize: 18 }}>
+            {t("landing.heroDescription")}
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button
+              component={Link}
+              href="/register"
+              size="large"
+              variant="contained"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              {t("landing.ctaStart")}
+            </Button>
+            <Button component={Link} href="/login" size="large" variant="outlined">
+              {t("landing.ctaHaveAccount")}
+            </Button>
+          </Stack>
+        </Stack>
+
+        <Box
+          sx={{
+            mt: { xs: 6, md: 10 },
+            display: "grid",
+            gap: 2,
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              lg: "repeat(4, 1fr)",
+            },
+          }}
+        >
+          {tracks.map(({ nameKey, descriptionKey, icon: Icon }) => (
+            <Card key={nameKey} variant="outlined">
+              <CardContent>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 44,
+                    height: 44,
+                    borderRadius: 2,
+                    bgcolor: "primary.main",
+                    color: "primary.contrastText",
+                    mb: 1.5,
+                  }}
+                >
+                  <Icon />
+                </Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  {t(`landing.track.${nameKey}`)}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {t(`landing.track.${descriptionKey}`)}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+
+        <Card variant="outlined" sx={{ mt: { xs: 6, md: 10 } }}>
+          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={3}
+              sx={{ alignItems: { md: "center" }, justifyContent: "space-between" }}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              <Box>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  {t("landing.rankingTitle")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  {t("landing.rankingDescription")}
+                </Typography>
+              </Box>
+              <Button component={Link} href="/learn/demo" variant="contained" size="large">
+                {t("landing.rankingCta")}
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   );
 }

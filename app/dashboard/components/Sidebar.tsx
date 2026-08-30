@@ -11,10 +11,12 @@ import Typography from "@mui/material/Typography";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { navItems } from "./nav-items";
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -26,7 +28,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </Toolbar>
       <Divider />
       <List sx={{ px: 1, py: 2, flex: 1 }}>
-        {navItems.map(({ label, href, icon: Icon }) => {
+        {navItems.map(({ labelKey, href, icon: Icon }) => {
           const selected =
             href === "/dashboard"
               ? pathname === href
@@ -57,7 +59,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <Icon />
               </ListItemIcon>
-              <ListItemText primary={label} />
+              <ListItemText primary={t(`dashboardNav.${labelKey}`)} />
             </ListItemButton>
           );
         })}

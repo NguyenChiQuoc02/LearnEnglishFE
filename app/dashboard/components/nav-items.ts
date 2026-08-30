@@ -7,24 +7,24 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import type { SvgIconComponent } from "@mui/icons-material";
 
 export type NavItem = {
-  label: string;
+  labelKey: "dashboard" | "courses" | "vocabulary" | "students" | "reports" | "settings";
   href: string;
   icon: SvgIconComponent;
 };
 
 export const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: DashboardRoundedIcon },
-  { label: "Lessons", href: "/dashboard/lessons", icon: MenuBookRoundedIcon },
+  { labelKey: "dashboard", href: "/dashboard", icon: DashboardRoundedIcon },
+  { labelKey: "courses", href: "/dashboard/courses", icon: MenuBookRoundedIcon },
   {
-    label: "Vocabulary",
+    labelKey: "vocabulary",
     href: "/dashboard/vocabulary",
     icon: SpellcheckRoundedIcon,
   },
-  { label: "Students", href: "/dashboard/students", icon: GroupRoundedIcon },
+  { labelKey: "students", href: "/dashboard/students", icon: GroupRoundedIcon },
   {
-    label: "Reports",
+    labelKey: "reports",
     href: "/dashboard/reports",
     icon: AssessmentRoundedIcon,
   },
-  { label: "Settings", href: "/dashboard/settings", icon: SettingsRoundedIcon },
+  { labelKey: "settings", href: "/dashboard/settings", icon: SettingsRoundedIcon },
 ];
