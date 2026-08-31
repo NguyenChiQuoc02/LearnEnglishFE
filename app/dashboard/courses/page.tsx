@@ -72,6 +72,12 @@ export default function CoursesPage() {
 
   const columns: DataTableColumn<CourseResponse>[] = [
     {
+      key: "stt",
+      header: t("common.stt"),
+      align: "center",
+      render: (_course, rowIndex) => rowIndex + 1,
+    },
+    {
       key: "title",
       header: t("coursesAdmin.columnTitle"),
       render: (course) => <Typography sx={{ fontWeight: 600 }}>{course.title}</Typography>,

@@ -93,6 +93,12 @@ export default function NotificationsPage() {
 
   const columns: DataTableColumn<NotificationResponse>[] = [
     {
+      key: "stt",
+      header: t("common.stt"),
+      align: "center",
+      render: (_n, rowIndex) => rowIndex + 1,
+    },
+    {
       key: "title",
       header: t("notificationsAdmin.columnTitle"),
       render: (n) => <Typography sx={{ fontWeight: 600 }}>{n.title}</Typography>,

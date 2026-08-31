@@ -109,7 +109,7 @@ export default function EditNotificationPage({ params }: { params: Promise<{ id:
       {values && (
         <Card variant="outlined" sx={{ borderRadius: 3 }}>
           <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
-            <Box component="form" onSubmit={handleSubmit}>
+            <Box component="form" onSubmit={handleSubmit} noValidate>
               <Stack spacing={3}>
                 <NotificationForm values={values} onChange={handleChange} />
 

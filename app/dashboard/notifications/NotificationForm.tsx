@@ -59,6 +59,12 @@ export function buildNotificationPayload(
   values: NotificationFormValues,
   t: TFunction
 ): { payload: NotificationRequest } | { error: string } {
+  if (!values.title.trim()) {
+    return { error: t("notificationsAdminNew.errorTitleRequired") };
+  }
+  if (!values.content.trim()) {
+    return { error: t("notificationsAdminNew.errorContentRequired") };
+  }
   if (values.targetType === "COURSE" && values.targetCourseId === "") {
     return { error: t("notificationsAdminNew.errorTargetCourseRequired") };
   }

@@ -20,12 +20,21 @@ export default function LoginPage() {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const nextUsernameError = username.trim() ? null : t("login.errorUsernameRequired");
+    const nextPasswordError = password ? null : t("login.errorPasswordRequired");
+    setUsernameError(nextUsernameError);
+    setPasswordError(nextPasswordError);
+    if (nextUsernameError || nextPasswordError) return;
+
     setLoading(true);
     try {
       const auth = await login(username, password);
@@ -58,7 +67,7 @@ export default function LoginPage() {
             {t("login.subtitle")}
           </Typography>
 
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
               {error && <Alert severity="error">{error}</Alert>}
               <TextField
@@ -68,6 +77,8 @@ export default function LoginPage() {
                 required
                 fullWidth
                 autoFocus
+                error={!!usernameError}
+                helperText={usernameError}
               />
               <TextField
                 label={t("login.fieldPassword")}
@@ -76,6 +87,8 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 fullWidth
+                error={!!passwordError}
+                helperText={passwordError}
               />
               <Button
                 type="submit"

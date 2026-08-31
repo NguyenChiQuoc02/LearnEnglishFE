@@ -27,7 +27,8 @@ export type DataTableColumn<T> = {
   key: string;
   header: ReactNode;
   align?: "left" | "right" | "center";
-  render: (row: T) => ReactNode;
+  /** `rowIndex` is the row's absolute position (0-based) across all pages. */
+  render: (row: T, rowIndex: number) => ReactNode;
 };
 
 export type DataTableProps<T> = {
@@ -252,8 +253,9 @@ export default function DataTable<T>({
                 </TableCell>
               </TableRow>
             )}
-            {!loading && pagedRows.map((row) => {
+            {!loading && pagedRows.map((row, i) => {
               const id = getRowId(row);
+              const rowIndex = page * rowsPerPage + i;
               return (
                 <TableRow
                   key={id}
@@ -272,7 +274,7 @@ export default function DataTable<T>({
                   )}
                   {columns.map((col) => (
                     <TableCell key={col.key} align={col.align}>
-                      {col.render(row)}
+                      {col.render(row, rowIndex)}
                     </TableCell>
                   ))}
                 </TableRow>

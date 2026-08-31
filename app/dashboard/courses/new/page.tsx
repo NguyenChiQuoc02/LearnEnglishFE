@@ -33,12 +33,13 @@ export default function NewCoursePage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [courseType, setCourseType] = useState<string>(COURSE_TYPES[0]);
-  const [level, setLevel] = useState<string>("");
+  const [level, setLevel] = useState<string>(COURSE_LEVELS[0]);
   const [teacherId, setTeacherId] = useState<string>("");
   const [wordsPerSession, setWordsPerSession] = useState(10);
   const [pointsPerCorrect, setPointsPerCorrect] = useState(10);
   const [pointsPerWrong, setPointsPerWrong] = useState(-2);
-  const [published, setPublished] = useState(false);
+  const [published, setPublished] = useState(true);
+  const [titleError, setTitleError] = useState<string | null>(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -54,6 +55,11 @@ export default function NewCoursePage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const nextTitleError = title.trim() ? null : t("coursesAdminNew.errorTitleRequired");
+    setTitleError(nextTitleError);
+    if (nextTitleError) return;
+
     if (!teacherId) {
       setError(t("coursesAdminNew.errorTeacherRequired"));
       return;
@@ -94,7 +100,7 @@ export default function NewCoursePage() {
 
       <Card variant="outlined" sx={{ borderRadius: 3 }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={3}>
               {error && <Alert severity="error">{error}</Alert>}
 
@@ -107,6 +113,8 @@ export default function NewCoursePage() {
                   onChange={(e) => setTitle(e.target.value)}
                   required
                   fullWidth
+                  error={!!titleError}
+                  helperText={titleError}
                 />
                 <TextField
                   label={t("coursesAdminNew.fieldDescription")}

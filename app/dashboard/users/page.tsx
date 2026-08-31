@@ -89,6 +89,12 @@ export default function UsersPage() {
 
   const columns: DataTableColumn<UserResponse>[] = [
     {
+      key: "stt",
+      header: t("common.stt"),
+      align: "center",
+      render: (_user, rowIndex) => rowIndex + 1,
+    },
+    {
       key: "user",
       header: t("usersAdmin.columnUsername"),
       render: (user) => (
@@ -289,6 +295,7 @@ function EditUserDialog({
     roles: user.roles,
   });
   const [saving, setSaving] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ username?: string; email?: string }>({});
 
   function handleRolesChange(e: SelectChangeEvent<string[]>) {
     const value = e.target.value;
@@ -297,6 +304,13 @@ function EditUserDialog({
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+
+    const nextFieldErrors: typeof fieldErrors = {};
+    if (!form.username.trim()) nextFieldErrors.username = t("usersAdminNew.errorUsernameRequired");
+    if (!form.email.trim()) nextFieldErrors.email = t("usersAdminNew.errorEmailRequired");
+    setFieldErrors(nextFieldErrors);
+    if (Object.keys(nextFieldErrors).length > 0) return;
+
     if (form.roles.length === 0) {
       showToast(t("usersAdmin.errorRolesRequired"), "error");
       return;
@@ -324,7 +338,7 @@ function EditUserDialog({
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t("usersAdmin.editTitle")}</DialogTitle>
-      <Box component="form" onSubmit={handleSave}>
+      <Box component="form" onSubmit={handleSave} noValidate>
         <DialogContent>
           <Stack spacing={2}>
             <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
@@ -344,6 +358,8 @@ function EditUserDialog({
               onChange={(e) => setForm({ ...form, username: e.target.value })}
               required
               fullWidth
+              error={!!fieldErrors.username}
+              helperText={fieldErrors.username}
             />
             <TextField
               label={t("usersAdmin.fieldEmail")}
@@ -352,6 +368,8 @@ function EditUserDialog({
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
               fullWidth
+              error={!!fieldErrors.email}
+              helperText={fieldErrors.email}
             />
             <TextField
               label={t("usersAdmin.fieldPhone")}

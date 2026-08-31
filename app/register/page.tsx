@@ -21,12 +21,26 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{
+    username?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const nextFieldErrors: typeof fieldErrors = {};
+    if (!username.trim()) nextFieldErrors.username = t("register.errorUsernameRequired");
+    if (!email.trim()) nextFieldErrors.email = t("register.errorEmailRequired");
+    if (!password) nextFieldErrors.password = t("register.errorPasswordRequired");
+    if (!confirmPassword) nextFieldErrors.confirmPassword = t("register.errorConfirmPasswordRequired");
+    setFieldErrors(nextFieldErrors);
+    if (Object.keys(nextFieldErrors).length > 0) return;
 
     if (password !== confirmPassword) {
       setError(t("register.errorMismatch"));
@@ -64,7 +78,7 @@ export default function RegisterPage() {
             {t("register.subtitle")}
           </Typography>
 
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
               {error && <Alert severity="error">{error}</Alert>}
               <TextField
@@ -74,6 +88,8 @@ export default function RegisterPage() {
                 required
                 fullWidth
                 autoFocus
+                error={!!fieldErrors.username}
+                helperText={fieldErrors.username}
               />
               <TextField
                 label={t("register.fieldEmail")}
@@ -82,6 +98,8 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 fullWidth
+                error={!!fieldErrors.email}
+                helperText={fieldErrors.email}
               />
               <TextField
                 label={t("register.fieldPassword")}
@@ -90,6 +108,8 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 fullWidth
+                error={!!fieldErrors.password}
+                helperText={fieldErrors.password}
               />
               <TextField
                 label={t("register.fieldConfirmPassword")}
@@ -98,6 +118,8 @@ export default function RegisterPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 fullWidth
+                error={!!fieldErrors.confirmPassword}
+                helperText={fieldErrors.confirmPassword}
               />
               <Button
                 type="submit"

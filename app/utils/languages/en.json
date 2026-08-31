@@ -61,6 +61,7 @@
     "deleting": "Deleting...",
     "edit": "Edit",
     "viewDetail": "View details",
+    "stt": "No.",
     "actions": "Actions",
     "refresh": "Refresh",
     "search": "Search"
@@ -176,7 +177,9 @@
     "createButton": "Create user",
     "creating": "Creating...",
     "createSuccess": "User created successfully",
-    "errorCreateUser": "Failed to create user"
+    "errorCreateUser": "Failed to create user",
+    "errorUsernameRequired": "Please enter a username",
+    "errorEmailRequired": "Please enter an email"
   },
   "roles": {
     "ROLE_ADMIN": "Admin",
@@ -281,6 +284,8 @@
     "creating": "Creating...",
     "createSuccess": "Notification created successfully",
     "errorCreateNotification": "Failed to create notification",
+    "errorTitleRequired": "Please enter a title",
+    "errorContentRequired": "Please enter content",
     "errorTargetCourseRequired": "Please choose a course",
     "errorScheduledAtRequired": "Please choose a send date and time",
     "errorScheduledAtFuture": "Send date and time must be in the future",
@@ -298,6 +303,9 @@
     "fieldOldPassword": "Current password",
     "fieldNewPassword": "New password",
     "fieldConfirmPassword": "Confirm new password",
+    "errorOldPasswordRequired": "Please enter your current password",
+    "errorNewPasswordRequired": "Please enter a new password",
+    "errorConfirmPasswordRequired": "Please confirm your new password",
     "errorMismatch": "Passwords do not match",
     "errorTooShort": "New password must be at least 6 characters",
     "errorGeneric": "Failed to change password",
@@ -344,6 +352,8 @@
     "fieldPassword": "Password",
     "submit": "Log in",
     "submitting": "Logging in...",
+    "errorUsernameRequired": "Please enter your username",
+    "errorPasswordRequired": "Please enter your password",
     "errorGeneric": "Login failed",
     "noAccount": "Don't have an account?",
     "registerNow": "Sign up now"
@@ -355,6 +365,10 @@
     "fieldEmail": "Email",
     "fieldPassword": "Password",
     "fieldConfirmPassword": "Confirm password",
+    "errorUsernameRequired": "Please enter a username",
+    "errorEmailRequired": "Please enter an email",
+    "errorPasswordRequired": "Please enter a password",
+    "errorConfirmPasswordRequired": "Please confirm your password",
     "errorMismatch": "Passwords do not match",
     "errorGeneric": "Registration failed",
     "submit": "Sign up",
@@ -376,6 +390,7 @@
     "brand": "Learn English",
     "title": "Courses",
     "subtitle": "Enroll in courses and start practicing vocabulary.",
+    "subtitleCount": "{{count}} courses open for enrollment",
     "errorLoadCourses": "Could not load the course list",
     "errorEnroll": "Failed to enroll in the course",
     "noDescription": "No description yet.",
@@ -384,6 +399,11 @@
     "enroll": "Enroll",
     "enrolling": "Enrolling...",
     "emptyNoCourses": "No published courses yet."
+  },
+  "courseLevels": {
+    "BEGINNER": "Beginner",
+    "INTERMEDIATE": "Intermediate",
+    "ADVANCED": "Advanced"
   },
   "coursesAdminNew": {
     "title": "New course",
@@ -401,6 +421,7 @@
     "fieldPublished": "Published",
     "submit": "Create course",
     "submitting": "Creating...",
+    "errorTitleRequired": "Please enter a title",
     "errorTeacherRequired": "Please choose a teacher",
     "errorLoadTeachers": "Failed to load teachers",
     "errorCreateCourse": "Failed to create course"
@@ -408,6 +429,7 @@
   "courseDetail": {
     "errorLoadCourse": "Failed to load course",
     "errorSaveCourse": "Failed to save course",
+    "errorTitleRequired": "Please enter a title",
     "sectionInfo": "Course information",
     "sectionSettings": "Learning settings",
     "fieldTitle": "Title",
@@ -435,12 +457,18 @@
       "fieldAudioUrl": "Audio URL",
       "addWord": "Add word",
       "adding": "Adding...",
+      "errorWordRequired": "Please enter a word",
       "errorAddWord": "Failed to add word",
       "editWordTooltip": "Edit word",
       "editDialogTitle": "Edit word",
       "fieldExampleSentence": "Example sentence",
       "fieldExampleTranslation": "Example translation",
-      "errorUpdateWord": "Failed to update word"
+      "errorUpdateWord": "Failed to update word",
+      "deleteWordTooltip": "Delete word",
+      "deleteTitle": "Delete word",
+      "deleteConfirm": "Are you sure you want to delete \"{{word}}\"? This cannot be undone.",
+      "deleteSuccess": "Word deleted successfully",
+      "errorDeleteWord": "Failed to delete word"
     },
     "students": {
       "title": "Students",

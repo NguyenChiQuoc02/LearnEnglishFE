@@ -21,6 +21,18 @@ export function createAppTheme(primaryColor: string = DEFAULT_PRIMARY_COLOR) {
     shape: {
       borderRadius: 10,
     },
+    components: {
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: ({ theme }) => ({ color: theme.palette.error.main }),
+        },
+      },
+      MuiInputLabel: {
+        styleOverrides: {
+          asterisk: ({ theme }) => ({ color: theme.palette.error.main }),
+        },
+      },
+    },
   });
 }
 

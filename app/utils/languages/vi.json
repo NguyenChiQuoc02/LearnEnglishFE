@@ -61,6 +61,7 @@
     "deleting": "Đang xóa...",
     "edit": "Sửa",
     "viewDetail": "Xem chi tiết",
+    "stt": "STT",
     "actions": "Thao tác",
     "refresh": "Làm mới",
     "search": "Tìm kiếm"
@@ -176,7 +177,9 @@
     "createButton": "Tạo người dùng",
     "creating": "Đang tạo...",
     "createSuccess": "Tạo người dùng thành công",
-    "errorCreateUser": "Tạo người dùng thất bại"
+    "errorCreateUser": "Tạo người dùng thất bại",
+    "errorUsernameRequired": "Vui lòng nhập tên đăng nhập",
+    "errorEmailRequired": "Vui lòng nhập email"
   },
   "roles": {
     "ROLE_ADMIN": "Admin",
@@ -281,6 +284,8 @@
     "creating": "Đang tạo...",
     "createSuccess": "Tạo thông báo thành công",
     "errorCreateNotification": "Tạo thông báo thất bại",
+    "errorTitleRequired": "Vui lòng nhập tiêu đề",
+    "errorContentRequired": "Vui lòng nhập nội dung",
     "errorTargetCourseRequired": "Vui lòng chọn khóa học",
     "errorScheduledAtRequired": "Vui lòng chọn ngày giờ gửi",
     "errorScheduledAtFuture": "Thời điểm gửi phải ở tương lai",
@@ -298,6 +303,9 @@
     "fieldOldPassword": "Mật khẩu hiện tại",
     "fieldNewPassword": "Mật khẩu mới",
     "fieldConfirmPassword": "Xác nhận mật khẩu mới",
+    "errorOldPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
+    "errorNewPasswordRequired": "Vui lòng nhập mật khẩu mới",
+    "errorConfirmPasswordRequired": "Vui lòng xác nhận mật khẩu mới",
     "errorMismatch": "Mật khẩu xác nhận không khớp",
     "errorTooShort": "Mật khẩu mới phải có ít nhất 6 ký tự",
     "errorGeneric": "Đổi mật khẩu thất bại",
@@ -344,6 +352,8 @@
     "fieldPassword": "Mật khẩu",
     "submit": "Đăng nhập",
     "submitting": "Đang đăng nhập...",
+    "errorUsernameRequired": "Vui lòng nhập tên đăng nhập",
+    "errorPasswordRequired": "Vui lòng nhập mật khẩu",
     "errorGeneric": "Đăng nhập thất bại",
     "noAccount": "Chưa có tài khoản?",
     "registerNow": "Đăng ký ngay"
@@ -355,6 +365,10 @@
     "fieldEmail": "Email",
     "fieldPassword": "Mật khẩu",
     "fieldConfirmPassword": "Xác nhận mật khẩu",
+    "errorUsernameRequired": "Vui lòng nhập tên đăng nhập",
+    "errorEmailRequired": "Vui lòng nhập email",
+    "errorPasswordRequired": "Vui lòng nhập mật khẩu",
+    "errorConfirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
     "errorMismatch": "Mật khẩu xác nhận không khớp",
     "errorGeneric": "Đăng ký thất bại",
     "submit": "Đăng ký",
@@ -376,6 +390,7 @@
     "brand": "Learn English",
     "title": "Khóa học",
     "subtitle": "Đăng ký khóa học và bắt đầu luyện từ vựng.",
+    "subtitleCount": "{{count}} khóa học đang mở đăng ký",
     "errorLoadCourses": "Không tải được danh sách khóa học",
     "errorEnroll": "Đăng ký khóa học thất bại",
     "noDescription": "Chưa có mô tả.",
@@ -384,6 +399,11 @@
     "enroll": "Đăng ký học",
     "enrolling": "Đang đăng ký...",
     "emptyNoCourses": "Chưa có khóa học nào được công khai."
+  },
+  "courseLevels": {
+    "BEGINNER": "Mới bắt đầu",
+    "INTERMEDIATE": "Trung cấp",
+    "ADVANCED": "Nâng cao"
   },
   "coursesAdminNew": {
     "title": "Thêm khóa học",
@@ -401,6 +421,7 @@
     "fieldPublished": "Xuất bản",
     "submit": "Tạo khóa học",
     "submitting": "Đang tạo...",
+    "errorTitleRequired": "Vui lòng nhập tiêu đề",
     "errorTeacherRequired": "Vui lòng chọn giáo viên",
     "errorLoadTeachers": "Không thể tải danh sách giáo viên",
     "errorCreateCourse": "Tạo khóa học thất bại"
@@ -408,6 +429,7 @@
   "courseDetail": {
     "errorLoadCourse": "Không thể tải khóa học",
     "errorSaveCourse": "Lưu khóa học thất bại",
+    "errorTitleRequired": "Vui lòng nhập tiêu đề",
     "sectionInfo": "Thông tin khóa học",
     "sectionSettings": "Cấu hình học tập",
     "fieldTitle": "Tiêu đề",
@@ -435,12 +457,18 @@
       "fieldAudioUrl": "URL âm thanh",
       "addWord": "Thêm từ",
       "adding": "Đang thêm...",
+      "errorWordRequired": "Vui lòng nhập từ",
       "errorAddWord": "Thêm từ thất bại",
       "editWordTooltip": "Sửa từ",
       "editDialogTitle": "Sửa từ",
       "fieldExampleSentence": "Câu ví dụ",
       "fieldExampleTranslation": "Bản dịch câu ví dụ",
-      "errorUpdateWord": "Cập nhật từ thất bại"
+      "errorUpdateWord": "Cập nhật từ thất bại",
+      "deleteWordTooltip": "Xóa từ",
+      "deleteTitle": "Xóa từ vựng",
+      "deleteConfirm": "Bạn có chắc muốn xóa từ \"{{word}}\"? Hành động này không thể hoàn tác.",
+      "deleteSuccess": "Xóa từ thành công",
+      "errorDeleteWord": "Xóa từ thất bại"
     },
     "students": {
       "title": "Học viên",

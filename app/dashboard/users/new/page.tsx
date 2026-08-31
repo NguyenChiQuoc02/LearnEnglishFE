@@ -39,6 +39,7 @@ export default function NewUserPage() {
   const [roles, setRoles] = useState<string[]>(["ROLE_USER"]);
   const [provinceCode, setProvinceCode] = useState("");
   const [wardCode, setWardCode] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ username?: string; email?: string }>({});
 
   function handleRolesChange(e: SelectChangeEvent<string[]>) {
     const value = e.target.value;
@@ -47,6 +48,13 @@ export default function NewUserPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const nextFieldErrors: typeof fieldErrors = {};
+    if (!username.trim()) nextFieldErrors.username = t("usersAdminNew.errorUsernameRequired");
+    if (!email.trim()) nextFieldErrors.email = t("usersAdminNew.errorEmailRequired");
+    setFieldErrors(nextFieldErrors);
+    if (Object.keys(nextFieldErrors).length > 0) return;
+
     if (roles.length === 0) {
       showToast(t("usersAdmin.errorRolesRequired"), "error");
       return;
@@ -88,7 +96,7 @@ export default function NewUserPage() {
 
       <Card variant="outlined" sx={{ borderRadius: 3 }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={3}>
               <Alert severity="info">
                 <Trans
@@ -119,6 +127,8 @@ export default function NewUserPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   fullWidth
+                  error={!!fieldErrors.username}
+                  helperText={fieldErrors.username}
                 />
                 <TextField
                   label={t("usersAdmin.fieldEmail")}
@@ -127,6 +137,8 @@ export default function NewUserPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   fullWidth
+                  error={!!fieldErrors.email}
+                  helperText={fieldErrors.email}
                 />
                 <TextField
                   label={t("usersAdmin.fieldPhone")}

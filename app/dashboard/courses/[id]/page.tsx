@@ -13,6 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Divider from "@mui/material/Divider";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -29,11 +30,14 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import BackButton from "@/app/dashboard/components/BackButton";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import { useToast } from "@/app/components/shared/ToastContext";
 import {
   addVocabularyItem,
+  deleteVocabularyItem,
   getCourse,
   listCourseStudents,
   listStudentSessions,
@@ -59,6 +63,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
   const [words, setWords] = useState<VocabularyItemResponse[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [titleError, setTitleError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -74,6 +79,11 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
     e.preventDefault();
     if (!course) return;
     setSaveError(null);
+
+    const nextTitleError = course.title.trim() ? null : t("courseDetail.errorTitleRequired");
+    setTitleError(nextTitleError);
+    if (nextTitleError) return;
+
     setSaving(true);
     try {
       const updated = await updateCourse(id, {
@@ -108,7 +118,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
 
       <Card variant="outlined" sx={{ borderRadius: 3 }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
-          <Box component="form" onSubmit={handleSave}>
+          <Box component="form" onSubmit={handleSave} noValidate>
             <Stack spacing={3}>
               {saveError && <Alert severity="error">{saveError}</Alert>}
 
@@ -121,6 +131,8 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
                   onChange={(e) => setCourse({ ...course, title: e.target.value })}
                   required
                   fullWidth
+                  error={!!titleError}
+                  helperText={titleError}
                 />
                 <TextField
                   label={t("courseDetail.fieldDescription")}
@@ -221,6 +233,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
         words={words}
         onAdded={(w) => setWords((prev) => [...prev, w])}
         onUpdated={(w) => setWords((prev) => prev.map((x) => (x.id === w.id ? w : x)))}
+        onDeleted={(wordId) => setWords((prev) => prev.filter((x) => x.id !== wordId))}
       />
 
       <Divider />
@@ -235,11 +248,13 @@ function VocabularySection({
   words,
   onAdded,
   onUpdated,
+  onDeleted,
 }: {
   courseId: string;
   words: VocabularyItemResponse[];
   onAdded: (word: VocabularyItemResponse) => void;
   onUpdated: (word: VocabularyItemResponse) => void;
+  onDeleted: (wordId: number) => void;
 }) {
   const [word, setWord] = useState("");
   const [phonetic, setPhonetic] = useState("");
@@ -248,13 +263,20 @@ function VocabularySection({
   const [imageUrl, setImageUrl] = useState("");
   const [audioUrl, setAudioUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [wordError, setWordError] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [editingItem, setEditingItem] = useState<VocabularyItemResponse | null>(null);
+  const [deletingItem, setDeletingItem] = useState<VocabularyItemResponse | null>(null);
   const { t } = useTranslation();
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const nextWordError = word.trim() ? null : t("courseDetail.vocabulary.errorWordRequired");
+    setWordError(nextWordError);
+    if (nextWordError) return;
+
     setAdding(true);
     try {
       const created = await addVocabularyItem(courseId, {
@@ -309,6 +331,11 @@ function VocabularySection({
                       <EditRoundedIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  <Tooltip title={t("courseDetail.vocabulary.deleteWordTooltip")}>
+                    <IconButton size="small" onClick={() => setDeletingItem(w)}>
+                      <DeleteRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
@@ -330,7 +357,7 @@ function VocabularySection({
           <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
             {t("courseDetail.vocabulary.addWordTitle")}
           </Typography>
-          <Box component="form" onSubmit={handleAdd}>
+          <Box component="form" onSubmit={handleAdd} noValidate>
             <Stack spacing={2}>
               {error && <Alert severity="error">{error}</Alert>}
               <Stack direction="row" spacing={2}>
@@ -340,6 +367,8 @@ function VocabularySection({
                   onChange={(e) => setWord(e.target.value)}
                   required
                   fullWidth
+                  error={!!wordError}
+                  helperText={wordError}
                 />
                 <TextField
                   label={t("courseDetail.vocabulary.fieldPhonetic")}
@@ -393,7 +422,66 @@ function VocabularySection({
           }}
         />
       )}
+
+      {deletingItem && (
+        <DeleteVocabularyDialog
+          courseId={courseId}
+          item={deletingItem}
+          onClose={() => setDeletingItem(null)}
+          onDeleted={() => {
+            onDeleted(deletingItem.id);
+            setDeletingItem(null);
+          }}
+        />
+      )}
     </Stack>
+  );
+}
+
+function DeleteVocabularyDialog({
+  courseId,
+  item,
+  onClose,
+  onDeleted,
+}: {
+  courseId: string;
+  item: VocabularyItemResponse;
+  onClose: () => void;
+  onDeleted: () => void;
+}) {
+  const { t } = useTranslation();
+  const { showToast } = useToast();
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteVocabularyItem(courseId, item.id);
+      showToast(t("courseDetail.vocabulary.deleteSuccess"));
+      onDeleted();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t("courseDetail.vocabulary.errorDeleteWord"), "error");
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>{t("courseDetail.vocabulary.deleteTitle")}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {t("courseDetail.vocabulary.deleteConfirm", { word: item.word })}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} disabled={deleting}>
+          {t("common.cancel")}
+        </Button>
+        <Button onClick={handleDelete} color="error" variant="contained" disabled={deleting}>
+          {deleting ? t("common.deleting") : t("common.delete")}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
@@ -419,12 +507,18 @@ function EditVocabularyDialog({
     audioUrl: item.audioUrl ?? "",
   });
   const [error, setError] = useState<string | null>(null);
+  const [wordError, setWordError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const { t } = useTranslation();
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    const nextWordError = form.word.trim() ? null : t("courseDetail.vocabulary.errorWordRequired");
+    setWordError(nextWordError);
+    if (nextWordError) return;
+
     setSaving(true);
     try {
       const updated = await updateVocabularyItem(courseId, item.id, form);
@@ -439,7 +533,7 @@ function EditVocabularyDialog({
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t("courseDetail.vocabulary.editDialogTitle")}</DialogTitle>
-      <Box component="form" onSubmit={handleSave}>
+      <Box component="form" onSubmit={handleSave} noValidate>
         <DialogContent>
           <Stack spacing={2}>
             {error && <Alert severity="error">{error}</Alert>}
@@ -450,6 +544,8 @@ function EditVocabularyDialog({
                 onChange={(e) => setForm({ ...form, word: e.target.value })}
                 required
                 fullWidth
+                error={!!wordError}
+                helperText={wordError}
               />
               <TextField
                 label={t("courseDetail.vocabulary.fieldPhonetic")}

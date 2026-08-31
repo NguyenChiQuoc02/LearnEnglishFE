@@ -79,6 +79,12 @@ export function updateVocabularyItem(
     .then((res) => res.data);
 }
 
+export function deleteVocabularyItem(courseId: number | string, itemId: number | string) {
+  return axiosClient
+    .delete<void>(API_ENDPOINTS.COURSES.VOCABULARY_ITEM(courseId, itemId))
+    .then((res) => res.data);
+}
+
 export function listCourseStudents(courseId: number | string) {
   return axiosClient
     .get<CourseStudentResponse[]>(API_ENDPOINTS.COURSES.STUDENTS(courseId))

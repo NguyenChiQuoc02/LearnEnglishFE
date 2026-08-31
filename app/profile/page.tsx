@@ -375,6 +375,11 @@ function ChangePasswordCard() {
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{
+    oldPassword?: string;
+    newPassword?: string;
+    confirmPassword?: string;
+  }>({});
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -383,6 +388,13 @@ function ChangePasswordCard() {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+
+    const nextFieldErrors: typeof fieldErrors = {};
+    if (!oldPassword) nextFieldErrors.oldPassword = t("profile.errorOldPasswordRequired");
+    if (!newPassword) nextFieldErrors.newPassword = t("profile.errorNewPasswordRequired");
+    if (!confirmPassword) nextFieldErrors.confirmPassword = t("profile.errorConfirmPasswordRequired");
+    setFieldErrors(nextFieldErrors);
+    if (Object.keys(nextFieldErrors).length > 0) return;
 
     if (newPassword !== confirmPassword) {
       setError(t("profile.errorMismatch"));
@@ -421,7 +433,7 @@ function ChangePasswordCard() {
 
   return (
     <SectionCard icon={<LockRoundedIcon />} title={t("profile.changePasswordTitle")}>
-      <Box component="form" onSubmit={handleSubmit}>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
         <Stack spacing={2} sx={{ maxWidth: 400 }}>
           {error && (
             <Alert severity="error" sx={{ borderRadius: 2 }}>
@@ -440,6 +452,8 @@ function ChangePasswordCard() {
             onChange={(e) => setOldPassword(e.target.value)}
             required
             fullWidth
+            error={!!fieldErrors.oldPassword}
+            helperText={fieldErrors.oldPassword}
             slotProps={{ input: visibilityAdornment(showOld, () => setShowOld((s) => !s)) }}
           />
           <TextField
@@ -449,6 +463,8 @@ function ChangePasswordCard() {
             onChange={(e) => setNewPassword(e.target.value)}
             required
             fullWidth
+            error={!!fieldErrors.newPassword}
+            helperText={fieldErrors.newPassword}
             slotProps={{ input: visibilityAdornment(showNew, () => setShowNew((s) => !s)) }}
           />
           <TextField
@@ -458,6 +474,8 @@ function ChangePasswordCard() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             fullWidth
+            error={!!fieldErrors.confirmPassword}
+            helperText={fieldErrors.confirmPassword}
             slotProps={{ input: visibilityAdornment(showConfirm, () => setShowConfirm((s) => !s)) }}
           />
           <Button
