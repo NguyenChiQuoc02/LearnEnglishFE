@@ -19,6 +19,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { createUser } from "@/app/services/user.service";
 import { DEFAULT_USER_PASSWORD, USER_ROLES } from "@/app/constants/user.constants";
+import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
 
 export default function NewUserPage() {
   const router = useRouter();
@@ -33,6 +34,8 @@ export default function NewUserPage() {
   const [address, setAddress] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [roles, setRoles] = useState<string[]>(["ROLE_USER"]);
+  const [provinceCode, setProvinceCode] = useState("");
+  const [wardCode, setWardCode] = useState("");
 
   function handleRolesChange(e: SelectChangeEvent<string[]>) {
     const value = e.target.value;
@@ -54,6 +57,8 @@ export default function NewUserPage() {
         dateOfBirth: dateOfBirth || undefined,
         address: address || undefined,
         avatarUrl: avatarUrl || undefined,
+        provinceCode: provinceCode || undefined,
+        wardCode: wardCode || undefined,
         roles,
       });
       showToast(t("usersAdminNew.createSuccess"));
@@ -130,6 +135,14 @@ export default function NewUserPage() {
                 onChange={(e) => setAddress(e.target.value)}
                 fullWidth
               />
+              <ProvinceWardSelect
+                value={{ provinceCode, wardCode }}
+                onChange={(v) => {
+                  setProvinceCode(v.provinceCode);
+                  setWardCode(v.wardCode);
+                }}
+              />
+
               <Select
                 multiple
                 value={roles}

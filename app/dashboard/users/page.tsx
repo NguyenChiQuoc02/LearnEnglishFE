@@ -28,6 +28,7 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
 import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
+import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { bulkDeleteUsers, deleteUser, listUsers, updateUser } from "@/app/services/user.service";
 import type { UserRequest, UserResponse } from "@/app/types";
@@ -275,6 +276,8 @@ function EditUserDialog({
     dateOfBirth: user.dateOfBirth ?? "",
     address: user.address ?? "",
     avatarUrl: user.avatarUrl ?? "",
+    provinceCode: user.provinceCode ?? "",
+    wardCode: user.wardCode ?? "",
     roles: user.roles,
   });
   const [saving, setSaving] = useState(false);
@@ -298,6 +301,8 @@ function EditUserDialog({
         dateOfBirth: form.dateOfBirth || undefined,
         address: form.address || undefined,
         avatarUrl: form.avatarUrl || undefined,
+        provinceCode: form.provinceCode || undefined,
+        wardCode: form.wardCode || undefined,
       });
       showToast(t("usersAdmin.saveSuccess"));
       onSaved(updated);
@@ -359,6 +364,10 @@ function EditUserDialog({
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               fullWidth
+            />
+            <ProvinceWardSelect
+              value={{ provinceCode: form.provinceCode ?? "", wardCode: form.wardCode ?? "" }}
+              onChange={(v) => setForm({ ...form, provinceCode: v.provinceCode, wardCode: v.wardCode })}
             />
             <Select
               multiple

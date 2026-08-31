@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
+import IconButton from "@mui/material/IconButton";
 import Popover from "@mui/material/Popover";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import PaletteRoundedIcon from "@mui/icons-material/PaletteRounded";
 import { THEME_COLOR_PRESETS } from "@/app/constants/theme.constants";
 import { useThemeColor } from "@/app/theme/ThemeColorContext";
 
@@ -28,18 +30,13 @@ export default function ThemeColorPicker() {
   return (
     <>
       <Tooltip title={t("themeColorPicker.label")}>
-        <ButtonBase
+        <IconButton
+          color="inherit"
           onClick={handleOpen}
           aria-label={t("themeColorPicker.label")}
-          sx={{
-            width: 28,
-            height: 28,
-            borderRadius: "50%",
-            bgcolor: primaryColor,
-            border: "2px solid",
-            borderColor: "rgba(255,255,255,0.6)",
-          }}
-        />
+        >
+          <PaletteRoundedIcon />
+        </IconButton>
       </Tooltip>
 
       <Popover

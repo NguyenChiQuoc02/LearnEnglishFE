@@ -5,6 +5,7 @@ import { getAuth } from "@/app/utils/auth-storage";
 import type {
   BulkDeleteResponse,
   PageResponse,
+  ProfileUpdateRequest,
   TeacherResponse,
   UserImportResponse,
   UserRequest,
@@ -36,6 +37,16 @@ export function createUser(payload: UserRequest) {
 export function updateUser(id: number | string, payload: UserRequest) {
   return axiosClient
     .put<UserResponse>(API_ENDPOINTS.USERS.DETAIL(id), payload)
+    .then((res) => res.data);
+}
+
+export function getMyProfile() {
+  return axiosClient.get<UserResponse>(API_ENDPOINTS.USERS.ME).then((res) => res.data);
+}
+
+export function updateMyProfile(payload: ProfileUpdateRequest) {
+  return axiosClient
+    .put<UserResponse>(API_ENDPOINTS.USERS.ME, payload)
     .then((res) => res.data);
 }
 

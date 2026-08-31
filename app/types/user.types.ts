@@ -12,6 +12,10 @@ export type UserResponse = {
   dateOfBirth: string | null;
   address: string | null;
   avatarUrl: string | null;
+  provinceCode: string | null;
+  provinceName: string | null;
+  wardCode: string | null;
+  wardName: string | null;
   roles: string[];
 };
 
@@ -22,7 +26,18 @@ export type UserRequest = {
   dateOfBirth?: string;
   address?: string;
   avatarUrl?: string;
+  provinceCode?: string;
+  wardCode?: string;
   roles: string[];
+};
+
+export type ProfileUpdateRequest = {
+  phoneNumber?: string;
+  dateOfBirth?: string;
+  address?: string;
+  avatarUrl?: string;
+  provinceCode?: string;
+  wardCode?: string;
 };
 
 export type ChangePasswordRequest = {

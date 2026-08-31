@@ -22,6 +22,10 @@ export function useThemeColor() {
 }
 
 export default function ThemeColorProvider({ children }: { children: React.ReactNode }) {
+  // Must start from the same default on server and client — reading localStorage
+  // in the initializer would make the client's first render diverge from the
+  // server-rendered HTML and trigger a React hydration mismatch. The real color
+  // is applied right after mount instead (see effect below).
   const [primaryColor, setPrimaryColorState] = useState(DEFAULT_PRIMARY_COLOR);
 
   useEffect(() => {

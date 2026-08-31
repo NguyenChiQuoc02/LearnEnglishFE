@@ -75,6 +75,9 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
                 </InputAdornment>
               ),
             },
+            htmlInput: {
+              suppressHydrationWarning: true,
+            },
           }}
         />
 
