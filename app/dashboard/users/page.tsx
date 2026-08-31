@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
@@ -26,6 +27,7 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
 import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
@@ -39,6 +41,7 @@ import ImportUsersDialog from "./ImportUsersDialog";
 const DEFAULT_PAGE_SIZE = 20;
 
 export default function UsersPage() {
+  const router = useRouter();
   const { t } = useTranslation();
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [totalElements, setTotalElements] = useState(0);
@@ -116,6 +119,11 @@ export default function UsersPage() {
       align: "right",
       render: (user) => (
         <>
+          <Tooltip title={t("common.viewDetail")}>
+            <IconButton size="small" onClick={() => router.push(`/dashboard/users/${user.id}`)}>
+              <VisibilityRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Tooltip title={t("common.edit")}>
             <IconButton size="small" onClick={() => setEditingUser(user)}>
               <EditRoundedIcon fontSize="small" />

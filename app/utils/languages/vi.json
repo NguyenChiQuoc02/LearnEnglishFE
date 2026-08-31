@@ -60,6 +60,7 @@
     "delete": "Xóa",
     "deleting": "Đang xóa...",
     "edit": "Sửa",
+    "viewDetail": "Xem chi tiết",
     "actions": "Thao tác",
     "refresh": "Làm mới",
     "search": "Tìm kiếm"
@@ -108,6 +109,13 @@
     "bulkDeleteResultSummary": "Đã xóa {{success}} người dùng · Bỏ qua {{failure}}",
     "errorBulkDelete": "Xóa người dùng đã chọn thất bại",
     "deleteSuccess": "Xóa người dùng thành công"
+  },
+  "usersAdminDetail": {
+    "title": "Chi tiết người dùng",
+    "subtitle": "Xem thông tin tài khoản người dùng",
+    "errorLoadUser": "Không thể tải thông tin người dùng",
+    "sectionContact": "Liên hệ",
+    "sectionPersonalInfo": "Thông tin cá nhân"
   },
   "usersImport": {
     "title": "Import người dùng từ Excel",
@@ -210,7 +218,39 @@
     "searchPlaceholder": "Tìm theo tiêu đề",
     "emptyNoNotifications": "Chưa có thông báo nào.",
     "emptyNoMatch": "Không tìm thấy thông báo phù hợp.",
-    "errorLoadNotifications": "Không thể tải danh sách thông báo"
+    "errorLoadNotifications": "Không thể tải danh sách thông báo",
+    "editDisabledSent": "Thông báo này đã được gửi nên không thể sửa",
+    "deleteTitle": "Xóa thông báo",
+    "deleteConfirm": "Bạn có chắc muốn xóa \"{{title}}\"? Hành động này không thể hoàn tác.",
+    "deleteSuccess": "Xóa thông báo thành công",
+    "errorDeleteNotification": "Xóa thông báo thất bại"
+  },
+  "notificationsAdminDetail": {
+    "title": "Chi tiết thông báo",
+    "subtitle": "Xem đầy đủ nội dung, người nhận và lịch gửi",
+    "errorLoadNotification": "Không thể tải thông báo",
+    "sectionContent": "Nội dung",
+    "sectionRecipients": "Người nhận",
+    "sectionDelivery": "Cách thức gửi",
+    "sectionMeta": "Thông tin khác",
+    "fieldLink": "URL liên kết",
+    "fieldTargetType": "Gửi đến",
+    "fieldTargetCourse": "Khóa học",
+    "fieldDeliveryType": "Cách thức gửi",
+    "fieldRecurrenceType": "Lặp lại",
+    "fieldScheduledAt": "Thời điểm gửi",
+    "fieldDailyTime": "Giờ trong ngày",
+    "fieldLastSentAt": "Lần gửi gần nhất"
+  },
+  "notificationsAdminEdit": {
+    "title": "Sửa thông báo",
+    "subtitle": "Cập nhật nội dung, người nhận hoặc lịch gửi",
+    "errorLoadNotification": "Không thể tải thông báo",
+    "errorAlreadySent": "Thông báo này đã được gửi nên không thể sửa.",
+    "saveButton": "Lưu thay đổi",
+    "saving": "Đang lưu...",
+    "updateSuccess": "Cập nhật thông báo thành công",
+    "errorUpdateNotification": "Cập nhật thông báo thất bại"
   },
   "notificationsAdminNew": {
     "title": "Tạo thông báo",
@@ -275,7 +315,11 @@
     "searchPlaceholder": "Tìm theo tiêu đề hoặc giáo viên",
     "emptyNoCourses": "Chưa có khóa học nào.",
     "emptyNoMatch": "Không tìm thấy khóa học phù hợp.",
-    "errorLoadCourses": "Không thể tải danh sách khóa học"
+    "errorLoadCourses": "Không thể tải danh sách khóa học",
+    "deleteTitle": "Xóa khóa học",
+    "deleteConfirm": "Bạn có chắc muốn xóa \"{{title}}\"? Hành động này không thể hoàn tác.",
+    "deleteSuccess": "Xóa khóa học thành công",
+    "errorDeleteCourse": "Xóa khóa học thất bại"
   },
   "login": {
     "title": "Đăng nhập",

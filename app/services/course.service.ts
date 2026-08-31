@@ -44,6 +44,10 @@ export function updateCourse(id: number | string, payload: CourseRequest) {
     .then((res) => res.data);
 }
 
+export function deleteCourse(id: number | string) {
+  return axiosClient.delete<void>(API_ENDPOINTS.COURSES.DETAIL(id)).then((res) => res.data);
+}
+
 export function listVocabulary(courseId: number | string) {
   return axiosClient
     .get<VocabularyItemResponse[]>(API_ENDPOINTS.COURSES.VOCABULARY(courseId))

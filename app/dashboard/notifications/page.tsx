@@ -2,17 +2,29 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
-import { listNotifications } from "@/app/services/notification.service";
+import { useToast } from "@/app/components/shared/ToastContext";
+import { deleteNotification, listNotifications } from "@/app/services/notification.service";
 import type { NotificationStatus } from "@/app/constants/notification.constants";
 import type { NotificationResponse } from "@/app/types";
 
@@ -24,10 +36,12 @@ const STATUS_COLOR: Record<NotificationStatus, "default" | "success" | "warning"
 };
 
 export default function NotificationsPage() {
+  const router = useRouter();
   const { t } = useTranslation();
   const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deletingNotification, setDeletingNotification] = useState<NotificationResponse | null>(null);
 
   function fetchNotifications() {
     setLoading(true);
@@ -101,6 +115,36 @@ export default function NotificationsPage() {
       header: t("notificationsAdmin.columnCreatedAt"),
       render: (n) => new Date(n.createdAt).toLocaleString(),
     },
+    {
+      key: "actions",
+      header: t("common.actions"),
+      align: "right",
+      render: (n) => (
+        <>
+          <Tooltip title={t("common.viewDetail")}>
+            <IconButton size="small" onClick={() => router.push(`/dashboard/notifications/${n.id}`)}>
+              <VisibilityRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={n.status === "SENT" ? t("notificationsAdmin.editDisabledSent") : t("common.edit")}>
+            <span>
+              <IconButton
+                size="small"
+                disabled={n.status === "SENT"}
+                onClick={() => router.push(`/dashboard/notifications/${n.id}/edit`)}
+              >
+                <EditRoundedIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title={t("common.delete")}>
+            <IconButton size="small" onClick={() => setDeletingNotification(n)}>
+              <DeleteRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </>
+      ),
+    },
   ];
 
   return (
@@ -137,6 +181,62 @@ export default function NotificationsPage() {
         loading={loading}
         onRefresh={fetchNotifications}
       />
+
+      {deletingNotification && (
+        <DeleteNotificationDialog
+          notification={deletingNotification}
+          onClose={() => setDeletingNotification(null)}
+          onDeleted={() => {
+            setDeletingNotification(null);
+            fetchNotifications();
+          }}
+        />
+      )}
     </Stack>
+  );
+}
+
+function DeleteNotificationDialog({
+  notification,
+  onClose,
+  onDeleted,
+}: {
+  notification: NotificationResponse;
+  onClose: () => void;
+  onDeleted: () => void;
+}) {
+  const { t } = useTranslation();
+  const { showToast } = useToast();
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteNotification(notification.id);
+      showToast(t("notificationsAdmin.deleteSuccess"));
+      onDeleted();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t("notificationsAdmin.errorDeleteNotification"), "error");
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>{t("notificationsAdmin.deleteTitle")}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {t("notificationsAdmin.deleteConfirm", { title: notification.title })}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} disabled={deleting}>
+          {t("common.cancel")}
+        </Button>
+        <Button onClick={handleDelete} color="error" variant="contained" disabled={deleting}>
+          {deleting ? t("common.deleting") : t("common.delete")}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

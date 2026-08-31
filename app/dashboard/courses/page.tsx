@@ -8,12 +8,22 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
-import { listManagedCourses } from "@/app/services/course.service";
+import { useToast } from "@/app/components/shared/ToastContext";
+import { deleteCourse, listManagedCourses } from "@/app/services/course.service";
 import type { CourseResponse } from "@/app/types";
 import { useAuth } from "@/app/utils/auth-storage";
 
@@ -30,6 +40,7 @@ export default function CoursesPage() {
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deletingCourse, setDeletingCourse] = useState<CourseResponse | null>(null);
   const auth = useAuth();
   const isAdmin = auth?.roles?.includes("ROLE_ADMIN") ?? false;
 
@@ -55,6 +66,10 @@ export default function CoursesPage() {
     setAppliedKeyword(searchInput);
   }
 
+  function reload() {
+    fetchCourses(page, rowsPerPage, appliedKeyword);
+  }
+
   const columns: DataTableColumn<CourseResponse>[] = [
     {
       key: "title",
@@ -76,6 +91,41 @@ export default function CoursesPage() {
         />
       ),
     },
+    ...(isAdmin
+      ? [
+          {
+            key: "actions",
+            header: t("common.actions"),
+            align: "right" as const,
+            render: (course: CourseResponse) => (
+              <>
+                <Tooltip title={t("common.viewDetail")}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/dashboard/courses/${course.id}`);
+                    }}
+                  >
+                    <VisibilityRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t("common.delete")}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeletingCourse(course);
+                    }}
+                  >
+                    <DeleteRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -124,8 +174,64 @@ export default function CoursesPage() {
         searchValue={searchInput}
         onSearchChange={setSearchInput}
         onSearchSubmit={handleSearchSubmit}
-        onRefresh={() => fetchCourses(page, rowsPerPage, appliedKeyword)}
+        onRefresh={reload}
       />
+
+      {deletingCourse && (
+        <DeleteCourseDialog
+          course={deletingCourse}
+          onClose={() => setDeletingCourse(null)}
+          onDeleted={() => {
+            setDeletingCourse(null);
+            reload();
+          }}
+        />
+      )}
     </Stack>
+  );
+}
+
+function DeleteCourseDialog({
+  course,
+  onClose,
+  onDeleted,
+}: {
+  course: CourseResponse;
+  onClose: () => void;
+  onDeleted: () => void;
+}) {
+  const { t } = useTranslation();
+  const { showToast } = useToast();
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteCourse(course.id);
+      showToast(t("coursesAdmin.deleteSuccess"));
+      onDeleted();
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t("coursesAdmin.errorDeleteCourse"), "error");
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>{t("coursesAdmin.deleteTitle")}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {t("coursesAdmin.deleteConfirm", { title: course.title })}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} disabled={deleting}>
+          {t("common.cancel")}
+        </Button>
+        <Button onClick={handleDelete} color="error" variant="contained" disabled={deleting}>
+          {deleting ? t("common.deleting") : t("common.delete")}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

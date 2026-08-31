@@ -60,6 +60,7 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "edit": "Edit",
+    "viewDetail": "View details",
     "actions": "Actions",
     "refresh": "Refresh",
     "search": "Search"
@@ -108,6 +109,13 @@
     "bulkDeleteResultSummary": "{{success}} users deleted · {{failure}} skipped",
     "errorBulkDelete": "Failed to delete the selected users",
     "deleteSuccess": "User deleted successfully"
+  },
+  "usersAdminDetail": {
+    "title": "User details",
+    "subtitle": "View the user's account information",
+    "errorLoadUser": "Failed to load user",
+    "sectionContact": "Contact",
+    "sectionPersonalInfo": "Personal information"
   },
   "usersImport": {
     "title": "Import users from Excel",
@@ -210,7 +218,39 @@
     "searchPlaceholder": "Search by title",
     "emptyNoNotifications": "No notifications yet.",
     "emptyNoMatch": "No notifications match your search.",
-    "errorLoadNotifications": "Failed to load notifications"
+    "errorLoadNotifications": "Failed to load notifications",
+    "editDisabledSent": "This notification has already been sent and can no longer be edited",
+    "deleteTitle": "Delete notification",
+    "deleteConfirm": "Are you sure you want to delete \"{{title}}\"? This cannot be undone.",
+    "deleteSuccess": "Notification deleted successfully",
+    "errorDeleteNotification": "Failed to delete notification"
+  },
+  "notificationsAdminDetail": {
+    "title": "Notification details",
+    "subtitle": "View the full message, recipients, and delivery schedule",
+    "errorLoadNotification": "Failed to load notification",
+    "sectionContent": "Content",
+    "sectionRecipients": "Recipients",
+    "sectionDelivery": "Delivery",
+    "sectionMeta": "Other details",
+    "fieldLink": "Link URL",
+    "fieldTargetType": "Send to",
+    "fieldTargetCourse": "Course",
+    "fieldDeliveryType": "Delivery",
+    "fieldRecurrenceType": "Repeat",
+    "fieldScheduledAt": "Send at",
+    "fieldDailyTime": "Time of day",
+    "fieldLastSentAt": "Last sent at"
+  },
+  "notificationsAdminEdit": {
+    "title": "Edit notification",
+    "subtitle": "Update the message, recipients, or delivery schedule",
+    "errorLoadNotification": "Failed to load notification",
+    "errorAlreadySent": "This notification has already been sent and can no longer be edited.",
+    "saveButton": "Save changes",
+    "saving": "Saving...",
+    "updateSuccess": "Notification updated successfully",
+    "errorUpdateNotification": "Failed to update notification"
   },
   "notificationsAdminNew": {
     "title": "New notification",
@@ -275,7 +315,11 @@
     "searchPlaceholder": "Search by title or teacher",
     "emptyNoCourses": "No courses yet.",
     "emptyNoMatch": "No courses match your search.",
-    "errorLoadCourses": "Failed to load courses"
+    "errorLoadCourses": "Failed to load courses",
+    "deleteTitle": "Delete course",
+    "deleteConfirm": "Are you sure you want to delete \"{{title}}\"? This cannot be undone.",
+    "deleteSuccess": "Course deleted successfully",
+    "errorDeleteCourse": "Failed to delete course"
   },
   "login": {
     "title": "Log in",
