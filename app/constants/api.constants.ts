@@ -45,4 +45,7 @@ export const API_ENDPOINTS = {
     BASE: "/provinces",
     WARDS: (code: string) => `/provinces/${code}/wards`,
   },
+  NOTIFICATIONS: {
+    BASE: "/notifications",
+  },
 } as const;

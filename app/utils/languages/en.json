@@ -40,6 +40,7 @@
     "vocabulary": "Vocabulary",
     "students": "Students",
     "users": "Users",
+    "notifications": "Notifications",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -52,6 +53,7 @@
     "editProfile": "Edit Profile"
   },
   "common": {
+    "back": "Back",
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
@@ -159,6 +161,9 @@
   },
   "usersAdminNew": {
     "title": "New user",
+    "subtitle": "Create a new user account",
+    "sectionPersonalInfo": "Personal information",
+    "sectionRoles": "Roles",
     "defaultPasswordNotice": "Default password: <strong>{{password}}</strong>. The user can change it after logging in.",
     "createButton": "Create user",
     "creating": "Creating...",
@@ -169,6 +174,73 @@
     "ROLE_ADMIN": "Admin",
     "ROLE_TEACHER": "Teacher",
     "ROLE_USER": "Student"
+  },
+  "notificationTargetTypes": {
+    "ALL": "Everyone",
+    "TEACHERS": "All teachers",
+    "STUDENTS": "All students",
+    "COURSE": "Course students"
+  },
+  "notificationDeliveryTypes": {
+    "IMMEDIATE": "Send immediately",
+    "SCHEDULED": "Scheduled"
+  },
+  "notificationRecurrenceTypes": {
+    "NONE": "One time",
+    "DAILY": "Daily"
+  },
+  "notificationStatuses": {
+    "PENDING": "Pending",
+    "ACTIVE": "Active (daily)",
+    "SENT": "Sent",
+    "CANCELLED": "Cancelled"
+  },
+  "notificationsAdmin": {
+    "title": "Notifications",
+    "subtitle": "Broadcast announcements and study reminders to your users",
+    "newNotification": "New notification",
+    "columnTitle": "Title",
+    "columnTarget": "Recipients",
+    "columnDelivery": "Delivery",
+    "columnStatus": "Status",
+    "columnCreatedBy": "Created by",
+    "columnCreatedAt": "Created at",
+    "scheduledAtPrefix": "At",
+    "dailyTimePrefix": "Daily at",
+    "searchPlaceholder": "Search by title",
+    "emptyNoNotifications": "No notifications yet.",
+    "emptyNoMatch": "No notifications match your search.",
+    "errorLoadNotifications": "Failed to load notifications"
+  },
+  "notificationsAdminNew": {
+    "title": "New notification",
+    "subtitle": "Compose the message and choose who receives it",
+    "sectionContent": "Content",
+    "sectionRecipients": "Recipients",
+    "sectionDelivery": "Delivery",
+    "fieldTitle": "Title",
+    "fieldContent": "Content",
+    "fieldImageUrl": "Image URL",
+    "imageUrlHint": "Must be a direct link to an image file (ending in .jpg, .png, .webp…), not a webpage link — otherwise it won't display in the email.",
+    "fieldLink": "Link URL",
+    "fieldTargetType": "Send to",
+    "fieldTargetCourse": "Course",
+    "fieldDeliveryType": "Delivery",
+    "fieldRecurrenceType": "Repeat",
+    "fieldScheduledAt": "Send at",
+    "fieldDailyTime": "Time of day",
+    "immediateNotice": "The notification email will be sent right away to every matching recipient.",
+    "scheduledOnceNotice": "The notification will be sent automatically once at the chosen date and time.",
+    "scheduledDailyNotice": "The notification will be sent automatically every day at the chosen time (e.g. a 7:00 PM study reminder), until cancelled.",
+    "createButton": "Create notification",
+    "creating": "Creating...",
+    "createSuccess": "Notification created successfully",
+    "errorCreateNotification": "Failed to create notification",
+    "errorTargetCourseRequired": "Please choose a course",
+    "errorScheduledAtRequired": "Please choose a send date and time",
+    "errorScheduledAtFuture": "Send date and time must be in the future",
+    "errorDailyTimeRequired": "Please choose a time of day",
+    "errorLoadCourses": "Failed to load courses"
   },
   "profile": {
     "title": "Profile",
@@ -255,6 +327,9 @@
   },
   "coursesAdminNew": {
     "title": "New course",
+    "subtitle": "Set up a new course",
+    "sectionInfo": "Course information",
+    "sectionSettings": "Learning settings",
     "fieldTitle": "Title",
     "fieldDescription": "Description",
     "fieldCourseType": "Course type",
@@ -273,6 +348,8 @@
   "courseDetail": {
     "errorLoadCourse": "Failed to load course",
     "errorSaveCourse": "Failed to save course",
+    "sectionInfo": "Course information",
+    "sectionSettings": "Learning settings",
     "fieldTitle": "Title",
     "fieldDescription": "Description",
     "fieldCourseType": "Course type",

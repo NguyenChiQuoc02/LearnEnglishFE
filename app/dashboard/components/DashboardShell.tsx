@@ -9,7 +9,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
 
-const DRAWER_WIDTH = 260;
+export const DRAWER_WIDTH = 260;
 
 export default function DashboardShell({
   children,

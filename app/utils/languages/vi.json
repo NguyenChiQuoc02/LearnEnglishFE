@@ -40,6 +40,7 @@
     "vocabulary": "Từ vựng",
     "students": "Học viên",
     "users": "Người dùng",
+    "notifications": "Thông báo",
     "reports": "Báo cáo",
     "settings": "Cài đặt"
   },
@@ -52,6 +53,7 @@
     "editProfile": "Sửa hồ sơ"
   },
   "common": {
+    "back": "Quay lại",
     "cancel": "Hủy",
     "save": "Lưu",
     "saving": "Đang lưu...",
@@ -159,6 +161,9 @@
   },
   "usersAdminNew": {
     "title": "Thêm người dùng",
+    "subtitle": "Tạo tài khoản người dùng mới",
+    "sectionPersonalInfo": "Thông tin cá nhân",
+    "sectionRoles": "Vai trò",
     "defaultPasswordNotice": "Mật khẩu mặc định: <strong>{{password}}</strong>. Người dùng có thể đổi sau khi đăng nhập.",
     "createButton": "Tạo người dùng",
     "creating": "Đang tạo...",
@@ -169,6 +174,73 @@
     "ROLE_ADMIN": "Admin",
     "ROLE_TEACHER": "Giáo viên",
     "ROLE_USER": "Học viên"
+  },
+  "notificationTargetTypes": {
+    "ALL": "Toàn bộ người dùng",
+    "TEACHERS": "Tất cả giáo viên",
+    "STUDENTS": "Tất cả học viên",
+    "COURSE": "Học viên của khóa học"
+  },
+  "notificationDeliveryTypes": {
+    "IMMEDIATE": "Gửi ngay",
+    "SCHEDULED": "Lên lịch"
+  },
+  "notificationRecurrenceTypes": {
+    "NONE": "Một lần",
+    "DAILY": "Hàng ngày"
+  },
+  "notificationStatuses": {
+    "PENDING": "Chờ gửi",
+    "ACTIVE": "Đang hoạt động (hàng ngày)",
+    "SENT": "Đã gửi",
+    "CANCELLED": "Đã hủy"
+  },
+  "notificationsAdmin": {
+    "title": "Thông báo",
+    "subtitle": "Gửi thông báo và nhắc nhở học tập tới người dùng",
+    "newNotification": "Tạo thông báo",
+    "columnTitle": "Tiêu đề",
+    "columnTarget": "Người nhận",
+    "columnDelivery": "Hình thức gửi",
+    "columnStatus": "Trạng thái",
+    "columnCreatedBy": "Người tạo",
+    "columnCreatedAt": "Ngày tạo",
+    "scheduledAtPrefix": "Lúc",
+    "dailyTimePrefix": "Hàng ngày lúc",
+    "searchPlaceholder": "Tìm theo tiêu đề",
+    "emptyNoNotifications": "Chưa có thông báo nào.",
+    "emptyNoMatch": "Không tìm thấy thông báo phù hợp.",
+    "errorLoadNotifications": "Không thể tải danh sách thông báo"
+  },
+  "notificationsAdminNew": {
+    "title": "Tạo thông báo",
+    "subtitle": "Soạn nội dung và chọn người nhận thông báo",
+    "sectionContent": "Nội dung",
+    "sectionRecipients": "Người nhận",
+    "sectionDelivery": "Cách thức gửi",
+    "fieldTitle": "Tiêu đề",
+    "fieldContent": "Nội dung",
+    "fieldImageUrl": "URL hình ảnh",
+    "imageUrlHint": "Phải là link trực tiếp tới file ảnh (đuôi .jpg, .png, .webp…), không phải link trang web — nếu không ảnh sẽ không hiển thị trong email.",
+    "fieldLink": "URL liên kết",
+    "fieldTargetType": "Gửi đến",
+    "fieldTargetCourse": "Khóa học",
+    "fieldDeliveryType": "Cách thức gửi",
+    "fieldRecurrenceType": "Lặp lại",
+    "fieldScheduledAt": "Thời điểm gửi",
+    "fieldDailyTime": "Giờ trong ngày",
+    "immediateNotice": "Email thông báo sẽ được gửi ngay lập tức đến tất cả người nhận phù hợp.",
+    "scheduledOnceNotice": "Thông báo sẽ tự động được gửi một lần vào đúng ngày giờ đã chọn.",
+    "scheduledDailyNotice": "Thông báo sẽ tự động được gửi mỗi ngày vào giờ đã chọn (ví dụ nhắc học lúc 19h), cho đến khi bị hủy.",
+    "createButton": "Tạo thông báo",
+    "creating": "Đang tạo...",
+    "createSuccess": "Tạo thông báo thành công",
+    "errorCreateNotification": "Tạo thông báo thất bại",
+    "errorTargetCourseRequired": "Vui lòng chọn khóa học",
+    "errorScheduledAtRequired": "Vui lòng chọn ngày giờ gửi",
+    "errorScheduledAtFuture": "Thời điểm gửi phải ở tương lai",
+    "errorDailyTimeRequired": "Vui lòng chọn giờ trong ngày",
+    "errorLoadCourses": "Không thể tải danh sách khóa học"
   },
   "profile": {
     "title": "Hồ sơ",
@@ -255,6 +327,9 @@
   },
   "coursesAdminNew": {
     "title": "Thêm khóa học",
+    "subtitle": "Thiết lập khóa học mới",
+    "sectionInfo": "Thông tin khóa học",
+    "sectionSettings": "Cấu hình học tập",
     "fieldTitle": "Tiêu đề",
     "fieldDescription": "Mô tả",
     "fieldCourseType": "Loại khóa học",
@@ -273,6 +348,8 @@
   "courseDetail": {
     "errorLoadCourse": "Không thể tải khóa học",
     "errorSaveCourse": "Lưu khóa học thất bại",
+    "sectionInfo": "Thông tin khóa học",
+    "sectionSettings": "Cấu hình học tập",
     "fieldTitle": "Tiêu đề",
     "fieldDescription": "Mô tả",
     "fieldCourseType": "Loại khóa học",

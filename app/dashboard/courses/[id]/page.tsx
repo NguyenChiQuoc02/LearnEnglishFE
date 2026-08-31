@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -29,6 +30,8 @@ import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import BackButton from "@/app/dashboard/components/BackButton";
+import SectionLabel from "@/app/dashboard/components/SectionLabel";
 import {
   addVocabularyItem,
   getCourse,
@@ -50,6 +53,7 @@ import { COURSE_LEVELS, COURSE_TYPES } from "@/app/constants/course.constants";
 export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[id]">) {
   const { id } = use(props.params);
   const { t } = useTranslation();
+  const router = useRouter();
 
   const [course, setCourse] = useState<CourseResponse | null>(null);
   const [words, setWords] = useState<VocabularyItemResponse[]>([]);
@@ -95,100 +99,112 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
   if (!course) return null;
 
   return (
-    <Stack spacing={3} sx={{ maxWidth: 720 }}>
+    <Stack spacing={3} sx={{ maxWidth: 720, mx: "auto" }}>
+      <BackButton onClick={() => router.push("/dashboard/courses")} />
+
       <Typography variant="h5" sx={{ fontWeight: 700 }}>
         {course.title}
       </Typography>
 
-      <Card variant="outlined">
-        <CardContent>
+      <Card variant="outlined" sx={{ borderRadius: 3 }}>
+        <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
           <Box component="form" onSubmit={handleSave}>
-            <Stack spacing={2}>
+            <Stack spacing={3}>
               {saveError && <Alert severity="error">{saveError}</Alert>}
 
-              <TextField
-                label={t("courseDetail.fieldTitle")}
-                value={course.title}
-                onChange={(e) => setCourse({ ...course, title: e.target.value })}
-                required
-                fullWidth
-              />
-              <TextField
-                label={t("courseDetail.fieldDescription")}
-                value={course.description ?? ""}
-                onChange={(e) => setCourse({ ...course, description: e.target.value })}
-                multiline
-                minRows={2}
-                fullWidth
-              />
-              <TextField
-                select
-                label={t("courseDetail.fieldCourseType")}
-                value={course.courseType}
-                onChange={(e) =>
-                  setCourse({ ...course, courseType: e.target.value as CourseResponse["courseType"] })
-                }
-                fullWidth
-              >
-                {COURSE_TYPES.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                select
-                label={t("courseDetail.fieldLevel")}
-                value={course.level ?? ""}
-                onChange={(e) =>
-                  setCourse({
-                    ...course,
-                    level: (e.target.value || null) as CourseResponse["level"],
-                  })
-                }
-                fullWidth
-              >
-                <MenuItem value="">—</MenuItem>
-                {COURSE_LEVELS.map((lvl) => (
-                  <MenuItem key={lvl} value={lvl}>
-                    {lvl}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <Stack spacing={2}>
+                <SectionLabel>{t("courseDetail.sectionInfo")}</SectionLabel>
 
-              <Stack direction="row" spacing={2}>
                 <TextField
-                  label={t("courseDetail.fieldWordsPerSession")}
-                  type="number"
-                  value={course.wordsPerSession}
-                  onChange={(e) => setCourse({ ...course, wordsPerSession: Number(e.target.value) })}
+                  label={t("courseDetail.fieldTitle")}
+                  value={course.title}
+                  onChange={(e) => setCourse({ ...course, title: e.target.value })}
+                  required
                   fullWidth
                 />
                 <TextField
-                  label={t("courseDetail.fieldPointsPerCorrect")}
-                  type="number"
-                  value={course.pointsPerCorrect}
-                  onChange={(e) => setCourse({ ...course, pointsPerCorrect: Number(e.target.value) })}
+                  label={t("courseDetail.fieldDescription")}
+                  value={course.description ?? ""}
+                  onChange={(e) => setCourse({ ...course, description: e.target.value })}
+                  multiline
+                  minRows={2}
                   fullWidth
                 />
                 <TextField
-                  label={t("courseDetail.fieldPointsPerWrong")}
-                  type="number"
-                  value={course.pointsPerWrong}
-                  onChange={(e) => setCourse({ ...course, pointsPerWrong: Number(e.target.value) })}
+                  select
+                  label={t("courseDetail.fieldCourseType")}
+                  value={course.courseType}
+                  onChange={(e) =>
+                    setCourse({ ...course, courseType: e.target.value as CourseResponse["courseType"] })
+                  }
                   fullWidth
-                />
+                >
+                  {COURSE_TYPES.map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  select
+                  label={t("courseDetail.fieldLevel")}
+                  value={course.level ?? ""}
+                  onChange={(e) =>
+                    setCourse({
+                      ...course,
+                      level: (e.target.value || null) as CourseResponse["level"],
+                    })
+                  }
+                  fullWidth
+                >
+                  <MenuItem value="">—</MenuItem>
+                  {COURSE_LEVELS.map((lvl) => (
+                    <MenuItem key={lvl} value={lvl}>
+                      {lvl}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Stack>
 
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={course.published}
-                    onChange={(e) => setCourse({ ...course, published: e.target.checked })}
+              <Divider />
+
+              <Stack spacing={2}>
+                <SectionLabel>{t("courseDetail.sectionSettings")}</SectionLabel>
+
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    label={t("courseDetail.fieldWordsPerSession")}
+                    type="number"
+                    value={course.wordsPerSession}
+                    onChange={(e) => setCourse({ ...course, wordsPerSession: Number(e.target.value) })}
+                    fullWidth
                   />
-                }
-                label={t("courseDetail.fieldPublished")}
-              />
+                  <TextField
+                    label={t("courseDetail.fieldPointsPerCorrect")}
+                    type="number"
+                    value={course.pointsPerCorrect}
+                    onChange={(e) => setCourse({ ...course, pointsPerCorrect: Number(e.target.value) })}
+                    fullWidth
+                  />
+                  <TextField
+                    label={t("courseDetail.fieldPointsPerWrong")}
+                    type="number"
+                    value={course.pointsPerWrong}
+                    onChange={(e) => setCourse({ ...course, pointsPerWrong: Number(e.target.value) })}
+                    fullWidth
+                  />
+                </Stack>
+
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={course.published}
+                      onChange={(e) => setCourse({ ...course, published: e.target.checked })}
+                    />
+                  }
+                  label={t("courseDetail.fieldPublished")}
+                />
+              </Stack>
 
               <Button type="submit" variant="contained" disabled={saving} sx={{ alignSelf: "flex-start" }}>
                 {saving ? t("common.saving") : t("courseDetail.saveChanges")}
@@ -269,7 +285,7 @@ function VocabularySection({
         {t("courseDetail.vocabulary.title", { count: words.length })}
       </Typography>
 
-      <Paper variant="outlined">
+      <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -309,8 +325,8 @@ function VocabularySection({
         </Table>
       </Paper>
 
-      <Card variant="outlined">
-        <CardContent>
+      <Card variant="outlined" sx={{ borderRadius: 3 }}>
+        <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
             {t("courseDetail.vocabulary.addWordTitle")}
           </Typography>
@@ -515,7 +531,7 @@ function StudentsSection({ courseId }: { courseId: string }) {
 
       {error && <Alert severity="error">{error}</Alert>}
 
-      <Paper variant="outlined">
+      <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
         <Table size="small">
           <TableHead>
             <TableRow>
