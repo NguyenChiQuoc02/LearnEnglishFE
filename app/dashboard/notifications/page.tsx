@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -18,6 +18,7 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
@@ -25,6 +26,7 @@ import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { deleteNotification, listNotifications } from "@/app/services/notification.service";
+import { getZaloAuthUrl, getZaloStatus } from "@/app/services/zalo.service";
 import type { NotificationStatus } from "@/app/constants/notification.constants";
 import type { NotificationResponse } from "@/app/types";
 
@@ -37,11 +39,41 @@ const STATUS_COLOR: Record<NotificationStatus, "default" | "success" | "warning"
 
 export default function NotificationsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [deletingNotification, setDeletingNotification] = useState<NotificationResponse | null>(null);
+  const [zaloConnected, setZaloConnected] = useState<boolean | null>(null);
+  const [connectingZalo, setConnectingZalo] = useState(false);
+
+  function refreshZaloStatus() {
+    getZaloStatus()
+      .then((res) => setZaloConnected(res.connected))
+      .catch(() => setZaloConnected(false));
+  }
+
+  useEffect(() => {
+    refreshZaloStatus();
+    if (searchParams.get("zaloConnected") === "1") {
+      showToast(t("notificationsAdmin.zaloConnectSuccess"));
+      router.replace("/dashboard/notifications");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handleConnectZalo() {
+    setConnectingZalo(true);
+    try {
+      const res = await getZaloAuthUrl();
+      window.location.href = res.url;
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t("notificationsAdmin.errorZaloAuthUrl"), "error");
+      setConnectingZalo(false);
+    }
+  }
 
   function fetchNotifications() {
     setLoading(true);
@@ -158,14 +190,35 @@ export default function NotificationsPage() {
             {t("notificationsAdmin.subtitle")}
           </Typography>
         </Box>
-        <Button
-          component={Link}
-          href="/dashboard/notifications/new"
-          variant="contained"
-          startIcon={<AddRoundedIcon />}
-        >
-          {t("notificationsAdmin.newNotification")}
-        </Button>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+          {zaloConnected === true && (
+            <Chip
+              size="small"
+              color="success"
+              icon={<ChatRoundedIcon fontSize="small" />}
+              label={t("notificationsAdmin.zaloConnected")}
+            />
+          )}
+          {zaloConnected === false && (
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<ChatRoundedIcon />}
+              onClick={handleConnectZalo}
+              disabled={connectingZalo}
+            >
+              {connectingZalo ? t("notificationsAdmin.zaloConnecting") : t("notificationsAdmin.zaloConnectButton")}
+            </Button>
+          )}
+          <Button
+            component={Link}
+            href="/dashboard/notifications/new"
+            variant="contained"
+            startIcon={<AddRoundedIcon />}
+          >
+            {t("notificationsAdmin.newNotification")}
+          </Button>
+        </Stack>
       </Stack>
 
       {error && <Alert severity="error">{error}</Alert>}

@@ -223,7 +223,12 @@
     "deleteTitle": "Delete notification",
     "deleteConfirm": "Are you sure you want to delete \"{{title}}\"? This cannot be undone.",
     "deleteSuccess": "Notification deleted successfully",
-    "errorDeleteNotification": "Failed to delete notification"
+    "errorDeleteNotification": "Failed to delete notification",
+    "zaloConnected": "Zalo OA connected",
+    "zaloConnectButton": "Connect Zalo OA",
+    "zaloConnecting": "Connecting...",
+    "zaloConnectSuccess": "Zalo OA connected successfully",
+    "errorZaloAuthUrl": "Failed to start the Zalo connection"
   },
   "notificationsAdminDetail": {
     "title": "Notification details",
@@ -298,7 +303,18 @@
     "errorGeneric": "Failed to change password",
     "success": "Password changed successfully",
     "submit": "Change password",
-    "submitting": "Saving..."
+    "submitting": "Saving...",
+    "zalo": {
+      "title": "Zalo notifications",
+      "description": "Link your Zalo account to also receive course reminders and announcements via Zalo, in addition to email.",
+      "linked": "Your Zalo account is linked.",
+      "getCodeButton": "Get link code",
+      "generating": "Generating...",
+      "instructions": "Open the OA below in Zalo, then send the code shown as a chat message to the OA to finish linking.",
+      "openOaButton": "Open Zalo OA",
+      "checkStatusButton": "I've linked it, check again",
+      "errorGenerateCode": "Failed to generate a link code"
+    }
   },
   "coursesAdmin": {
     "title": "Courses",

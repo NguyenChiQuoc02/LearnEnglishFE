@@ -223,7 +223,12 @@
     "deleteTitle": "Xóa thông báo",
     "deleteConfirm": "Bạn có chắc muốn xóa \"{{title}}\"? Hành động này không thể hoàn tác.",
     "deleteSuccess": "Xóa thông báo thành công",
-    "errorDeleteNotification": "Xóa thông báo thất bại"
+    "errorDeleteNotification": "Xóa thông báo thất bại",
+    "zaloConnected": "Đã kết nối Zalo OA",
+    "zaloConnectButton": "Kết nối Zalo OA",
+    "zaloConnecting": "Đang kết nối...",
+    "zaloConnectSuccess": "Kết nối Zalo OA thành công",
+    "errorZaloAuthUrl": "Không thể bắt đầu kết nối Zalo"
   },
   "notificationsAdminDetail": {
     "title": "Chi tiết thông báo",
@@ -298,7 +303,18 @@
     "errorGeneric": "Đổi mật khẩu thất bại",
     "success": "Đổi mật khẩu thành công",
     "submit": "Đổi mật khẩu",
-    "submitting": "Đang lưu..."
+    "submitting": "Đang lưu...",
+    "zalo": {
+      "title": "Thông báo qua Zalo",
+      "description": "Liên kết tài khoản Zalo để nhận thêm thông báo, nhắc học qua Zalo bên cạnh email.",
+      "linked": "Tài khoản Zalo của bạn đã được liên kết.",
+      "getCodeButton": "Lấy mã liên kết",
+      "generating": "Đang tạo mã...",
+      "instructions": "Mở OA bên dưới bằng Zalo, sau đó nhắn đoạn mã hiển thị dưới đây cho OA để hoàn tất liên kết.",
+      "openOaButton": "Mở Zalo OA",
+      "checkStatusButton": "Tôi đã liên kết, kiểm tra lại",
+      "errorGenerateCode": "Không thể tạo mã liên kết"
+    }
   },
   "coursesAdmin": {
     "title": "Khóa học",

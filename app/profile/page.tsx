@@ -15,18 +15,22 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import { changePassword } from "@/app/services/auth.service";
 import { getMyProfile, updateMyProfile } from "@/app/services/user.service";
+import { generateZaloLinkCode, getMyZaloStatus } from "@/app/services/zalo.service";
 import { useAuth } from "@/app/utils/auth-storage";
 import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
 import { useToast } from "@/app/components/shared/ToastContext";
-import type { UserResponse } from "@/app/types";
+import type { UserResponse, ZaloLinkCodeResponse } from "@/app/types";
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -133,6 +137,8 @@ export default function ProfilePage() {
       </Card>
 
       <PersonalInfoCard />
+
+      <ZaloLinkCard />
 
       <ChangePasswordCard />
     </Stack>
@@ -265,6 +271,97 @@ function PersonalInfoCard() {
         >
           {saving ? t("common.saving") : t("common.save")}
         </Button>
+      </Stack>
+    </SectionCard>
+  );
+}
+
+function ZaloLinkCard() {
+  const { t } = useTranslation();
+  const { showToast } = useToast();
+  const [linked, setLinked] = useState<boolean | null>(null);
+  const [linkCode, setLinkCode] = useState<ZaloLinkCodeResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  function refreshStatus() {
+    getMyZaloStatus()
+      .then((res) => setLinked(res.linked))
+      .catch(() => setLinked(false));
+  }
+
+  useEffect(() => {
+    refreshStatus();
+  }, []);
+
+  async function handleGenerateCode() {
+    setLoading(true);
+    try {
+      const res = await generateZaloLinkCode();
+      setLinkCode(res);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t("profile.zalo.errorGenerateCode"), "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <SectionCard icon={<ChatRoundedIcon />} title={t("profile.zalo.title")}>
+      <Stack spacing={2}>
+        <Typography variant="body2" color="text.secondary">
+          {t("profile.zalo.description")}
+        </Typography>
+
+        {linked && (
+          <Alert severity="success" sx={{ borderRadius: 2 }}>
+            {t("profile.zalo.linked")}
+          </Alert>
+        )}
+
+        {linked === false && !linkCode && (
+          <Button
+            variant="outlined"
+            onClick={handleGenerateCode}
+            disabled={loading}
+            sx={{ alignSelf: "flex-start", borderRadius: 2.5, px: 3, fontWeight: 700 }}
+          >
+            {loading ? t("profile.zalo.generating") : t("profile.zalo.getCodeButton")}
+          </Button>
+        )}
+
+        {linkCode && (
+          <Stack spacing={1.5}>
+            <Alert severity="info" sx={{ borderRadius: 2 }}>
+              {t("profile.zalo.instructions")}
+            </Alert>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: 800, letterSpacing: 4, textAlign: "center", py: 1 }}
+            >
+              {linkCode.code}
+            </Typography>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+              <Button
+                variant="contained"
+                href={linkCode.followUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                endIcon={<OpenInNewRoundedIcon />}
+                sx={{ borderRadius: 2.5, fontWeight: 700 }}
+              >
+                {t("profile.zalo.openOaButton")}
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<RefreshRoundedIcon />}
+                onClick={refreshStatus}
+                sx={{ borderRadius: 2.5, fontWeight: 700 }}
+              >
+                {t("profile.zalo.checkStatusButton")}
+              </Button>
+            </Stack>
+          </Stack>
+        )}
       </Stack>
     </SectionCard>
   );

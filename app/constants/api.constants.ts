@@ -49,4 +49,10 @@ export const API_ENDPOINTS = {
     BASE: "/notifications",
     DETAIL: (id: number | string) => `/notifications/${id}`,
   },
+  ZALO: {
+    AUTH_URL: "/zalo/auth-url",
+    STATUS: "/zalo/status",
+    LINK_CODE: "/zalo/link-code",
+    ME: "/zalo/me",
+  },
 } as const;
