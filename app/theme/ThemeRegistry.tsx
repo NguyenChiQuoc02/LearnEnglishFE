@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import CssBaseline from "@mui/material/CssBaseline";
 import ThemeColorProvider from "./ThemeColorContext";
+import ToastProvider from "@/app/components/shared/ToastContext";
 import i18n from "@/app/utils/i18n";
 import { getLanguage } from "@/app/utils/language-storage";
 
@@ -24,7 +25,7 @@ export default function ThemeRegistry({
     <AppRouterCacheProvider options={{ key: "mui" }}>
       <ThemeColorProvider>
         <CssBaseline />
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </ThemeColorProvider>
     </AppRouterCacheProvider>
   );

@@ -7,6 +7,7 @@ import type {
   CourseStudentResponse,
   LeaderboardEntryResponse,
   LearningSessionSummaryResponse,
+  PageResponse,
   VocabularyItemRequest,
   VocabularyItemResponse,
 } from "@/app/types";
@@ -19,9 +20,9 @@ export function listCourses(type?: CourseType) {
     .then((res) => res.data);
 }
 
-export function listManagedCourses() {
+export function listManagedCourses(params: { page?: number; size?: number; keyword?: string }) {
   return axiosClient
-    .get<CourseResponse[]>(API_ENDPOINTS.COURSES.MANAGE)
+    .get<PageResponse<CourseResponse>>(API_ENDPOINTS.COURSES.MANAGE, { params })
     .then((res) => res.data);
 }
 

@@ -23,27 +23,65 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
 import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
-import { deleteUser, listUsers, updateUser } from "@/app/services/user.service";
+import { useToast } from "@/app/components/shared/ToastContext";
+import { bulkDeleteUsers, deleteUser, listUsers, updateUser } from "@/app/services/user.service";
 import type { UserRequest, UserResponse } from "@/app/types";
 import { USER_ROLES } from "@/app/constants/user.constants";
+import ExportUsersDialog from "./ExportUsersDialog";
+import ImportUsersDialog from "./ImportUsersDialog";
+
+const DEFAULT_PAGE_SIZE = 20;
 
 export default function UsersPage() {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<UserResponse[] | null>(null);
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_PAGE_SIZE);
+  const [searchInput, setSearchInput] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
   const [deletingUser, setDeletingUser] = useState<UserResponse | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string | number>>(new Set());
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  function reload() {
-    listUsers()
-      .then(setUsers)
-      .catch((err) => setError(err instanceof Error ? err.message : t("usersAdmin.errorLoadUsers")));
+  function fetchUsers(targetPage: number, targetSize: number, keyword: string) {
+    setLoading(true);
+    setError(null);
+    listUsers({ page: targetPage, size: targetSize, keyword: keyword || undefined })
+      .then((res) => {
+        setUsers(res.content);
+        setTotalElements(res.totalElements);
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : t("usersAdmin.errorLoadUsers")))
+      .finally(() => setLoading(false));
   }
 
-  useEffect(reload, []);
+  // Runs on mount (loads page 1 immediately) and whenever page/rowsPerPage/the
+  // applied search term change. Typing alone doesn't refetch — only submitting
+  // the search (Enter / search icon) updates appliedKeyword.
+  useEffect(() => {
+    fetchUsers(page, rowsPerPage, appliedKeyword);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rowsPerPage, appliedKeyword]);
+
+  function reload() {
+    fetchUsers(page, rowsPerPage, appliedKeyword);
+  }
+
+  function handleSearchSubmit() {
+    setPage(0);
+    setAppliedKeyword(searchInput);
+  }
 
   const columns: DataTableColumn<UserResponse>[] = [
     {
@@ -103,30 +141,78 @@ export default function UsersPage() {
             {t("usersAdmin.subtitle")}
           </Typography>
         </Box>
-        <Button
-          component={Link}
-          href="/dashboard/users/new"
-          variant="contained"
-          startIcon={<AddRoundedIcon />}
-        >
-          {t("usersAdmin.newUser")}
-        </Button>
+        <Stack direction="row" spacing={1.5}>
+          <Button
+            variant="outlined"
+            startIcon={<DownloadRoundedIcon />}
+            onClick={() => setExportOpen(true)}
+          >
+            {t("usersAdmin.exportUsers")}
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<UploadFileRoundedIcon />}
+            onClick={() => setImportOpen(true)}
+          >
+            {t("usersAdmin.importUsers")}
+          </Button>
+          <Button
+            component={Link}
+            href="/dashboard/users/new"
+            variant="contained"
+            startIcon={<AddRoundedIcon />}
+          >
+            {t("usersAdmin.newUser")}
+          </Button>
+        </Stack>
       </Stack>
 
       {error && <Alert severity="error">{error}</Alert>}
 
+      {selectedIds.size > 0 && (
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+          <Typography variant="body2">
+            {t("usersAdmin.selectedCount", { count: selectedIds.size })}
+          </Typography>
+          <Button
+            size="small"
+            color="error"
+            variant="outlined"
+            startIcon={<DeleteRoundedIcon />}
+            onClick={() => setBulkDeleteOpen(true)}
+          >
+            {t("usersAdmin.deleteSelected")}
+          </Button>
+          <Button size="small" onClick={() => setSelectedIds(new Set())}>
+            {t("common.cancel")}
+          </Button>
+        </Stack>
+      )}
+
       <DataTable
         columns={columns}
-        rows={users ?? []}
+        rows={users}
         getRowId={(user) => user.id}
         emptyMessage={t("usersAdmin.emptyNoUsers")}
         noMatchMessage={t("usersAdmin.emptyNoMatch")}
         searchPlaceholder={t("usersAdmin.searchPlaceholder")}
-        searchPredicate={(user, term) =>
-          user.username.toLowerCase().includes(term) ||
-          user.email.toLowerCase().includes(term) ||
-          (user.phoneNumber ?? "").toLowerCase().includes(term)
-        }
+        selectable
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        loading={loading}
+        serverSide
+        page={page}
+        rowsPerPage={rowsPerPage}
+        totalCount={totalElements}
+        onPageChange={setPage}
+        onRowsPerPageChange={(size) => {
+          setRowsPerPage(size);
+          setPage(0);
+        }}
+        searchValue={searchInput}
+        onSearchChange={setSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+        onRefresh={reload}
       />
 
       {editingUser && (
@@ -134,7 +220,7 @@ export default function UsersPage() {
           user={editingUser}
           onClose={() => setEditingUser(null)}
           onSaved={(updated) => {
-            setUsers((prev) => prev?.map((u) => (u.id === updated.id ? updated : u)) ?? prev);
+            setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
             setEditingUser(null);
           }}
         />
@@ -145,8 +231,25 @@ export default function UsersPage() {
           user={deletingUser}
           onClose={() => setDeletingUser(null)}
           onDeleted={() => {
-            setUsers((prev) => prev?.filter((u) => u.id !== deletingUser.id) ?? prev);
             setDeletingUser(null);
+            reload();
+          }}
+        />
+      )}
+
+      {importOpen && (
+        <ImportUsersDialog onClose={() => setImportOpen(false)} onImported={reload} />
+      )}
+
+      {exportOpen && <ExportUsersDialog onClose={() => setExportOpen(false)} />}
+
+      {bulkDeleteOpen && (
+        <BulkDeleteUsersDialog
+          ids={Array.from(selectedIds, (id) => Number(id))}
+          onClose={() => setBulkDeleteOpen(false)}
+          onDone={() => {
+            setSelectedIds(new Set());
+            reload();
           }}
         />
       )}
@@ -164,6 +267,7 @@ function EditUserDialog({
   onSaved: (user: UserResponse) => void;
 }) {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [form, setForm] = useState<UserRequest>({
     username: user.username,
     email: user.email,
@@ -173,7 +277,6 @@ function EditUserDialog({
     avatarUrl: user.avatarUrl ?? "",
     roles: user.roles,
   });
-  const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   function handleRolesChange(e: SelectChangeEvent<string[]>) {
@@ -183,9 +286,8 @@ function EditUserDialog({
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     if (form.roles.length === 0) {
-      setError(t("usersAdmin.errorRolesRequired"));
+      showToast(t("usersAdmin.errorRolesRequired"), "error");
       return;
     }
     setSaving(true);
@@ -197,9 +299,10 @@ function EditUserDialog({
         address: form.address || undefined,
         avatarUrl: form.avatarUrl || undefined,
       });
+      showToast(t("usersAdmin.saveSuccess"));
       onSaved(updated);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("usersAdmin.errorSaveUser"));
+      showToast(err instanceof Error ? err.message : t("usersAdmin.errorSaveUser"), "error");
     } finally {
       setSaving(false);
     }
@@ -211,7 +314,6 @@ function EditUserDialog({
       <Box component="form" onSubmit={handleSave}>
         <DialogContent>
           <Stack spacing={2}>
-            {error && <Alert severity="error">{error}</Alert>}
             <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
               <Avatar src={form.avatarUrl || undefined} sx={{ width: 56, height: 56, bgcolor: "primary.main" }}>
                 {form.username[0]?.toUpperCase()}
@@ -302,17 +404,17 @@ function DeleteUserDialog({
   onDeleted: () => void;
 }) {
   const { t } = useTranslation();
-  const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
   const [deleting, setDeleting] = useState(false);
 
   async function handleDelete() {
-    setError(null);
     setDeleting(true);
     try {
       await deleteUser(user.id);
+      showToast(t("usersAdmin.deleteSuccess"));
       onDeleted();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("usersAdmin.errorDeleteUser"));
+      showToast(err instanceof Error ? err.message : t("usersAdmin.errorDeleteUser"), "error");
       setDeleting(false);
     }
   }
@@ -321,9 +423,66 @@ function DeleteUserDialog({
     <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>{t("usersAdmin.deleteTitle")}</DialogTitle>
       <DialogContent>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <DialogContentText>
           {t("usersAdmin.deleteConfirm", { username: user.username })}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} disabled={deleting}>
+          {t("common.cancel")}
+        </Button>
+        <Button onClick={handleDelete} color="error" variant="contained" disabled={deleting}>
+          {deleting ? t("common.deleting") : t("common.delete")}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function BulkDeleteUsersDialog({
+  ids,
+  onClose,
+  onDone,
+}: {
+  ids: number[];
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const { t } = useTranslation();
+  const { showToast } = useToast();
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const response = await bulkDeleteUsers(ids);
+      onClose();
+      if (response.successCount > 0) {
+        showToast(
+          t("usersAdmin.bulkDeleteResultSummary", {
+            success: response.successCount,
+            failure: response.failureCount,
+          })
+        );
+        onDone();
+      }
+      response.results
+        .filter((r) => !r.success)
+        .forEach((r) => showToast(`${r.username ?? `#${r.id}`}: ${r.error}`, "error"));
+    } catch (err) {
+      onClose();
+      showToast(err instanceof Error ? err.message : t("usersAdmin.errorBulkDelete"), "error");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>{t("usersAdmin.bulkDeleteTitle")}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {t("usersAdmin.bulkDeleteConfirm", { count: ids.length })}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

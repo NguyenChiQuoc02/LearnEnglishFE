@@ -17,19 +17,43 @@ import { listManagedCourses } from "@/app/services/course.service";
 import type { CourseResponse } from "@/app/types";
 import { useAuth } from "@/app/utils/auth-storage";
 
+const DEFAULT_PAGE_SIZE = 20;
+
 export default function CoursesPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const [courses, setCourses] = useState<CourseResponse[] | null>(null);
+  const [courses, setCourses] = useState<CourseResponse[]>([]);
+  const [totalElements, setTotalElements] = useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_PAGE_SIZE);
+  const [searchInput, setSearchInput] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const auth = useAuth();
   const isAdmin = auth?.roles?.includes("ROLE_ADMIN") ?? false;
 
+  function fetchCourses(targetPage: number, targetSize: number, keyword: string) {
+    setLoading(true);
+    setError(null);
+    listManagedCourses({ page: targetPage, size: targetSize, keyword: keyword || undefined })
+      .then((res) => {
+        setCourses(res.content);
+        setTotalElements(res.totalElements);
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : t("coursesAdmin.errorLoadCourses")))
+      .finally(() => setLoading(false));
+  }
+
   useEffect(() => {
-    listManagedCourses()
-      .then(setCourses)
-      .catch((err) => setError(err instanceof Error ? err.message : t("coursesAdmin.errorLoadCourses")));
-  }, [t]);
+    fetchCourses(page, rowsPerPage, appliedKeyword);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rowsPerPage, appliedKeyword]);
+
+  function handleSearchSubmit() {
+    setPage(0);
+    setAppliedKeyword(searchInput);
+  }
 
   const columns: DataTableColumn<CourseResponse>[] = [
     {
@@ -81,15 +105,26 @@ export default function CoursesPage() {
 
       <DataTable
         columns={columns}
-        rows={courses ?? []}
+        rows={courses}
         getRowId={(course) => course.id}
         onRowClick={(course) => router.push(`/dashboard/courses/${course.id}`)}
         emptyMessage={t("coursesAdmin.emptyNoCourses")}
         noMatchMessage={t("coursesAdmin.emptyNoMatch")}
         searchPlaceholder={t("coursesAdmin.searchPlaceholder")}
-        searchPredicate={(course, term) =>
-          course.title.toLowerCase().includes(term) || course.teacherName.toLowerCase().includes(term)
-        }
+        loading={loading}
+        serverSide
+        page={page}
+        rowsPerPage={rowsPerPage}
+        totalCount={totalElements}
+        onPageChange={setPage}
+        onRowsPerPageChange={(size) => {
+          setRowsPerPage(size);
+          setPage(0);
+        }}
+        searchValue={searchInput}
+        onSearchChange={setSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+        onRefresh={() => fetchCourses(page, rowsPerPage, appliedKeyword)}
       />
     </Stack>
   );

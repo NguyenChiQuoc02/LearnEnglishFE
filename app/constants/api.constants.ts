@@ -32,5 +32,12 @@ export const API_ENDPOINTS = {
     TEACHERS: "/users/teachers",
     DETAIL: (id: number | string) => `/users/${id}`,
     CHANGE_PASSWORD: "/users/me/password",
+    IMPORT_TEMPLATE: "/users/import/template",
+    IMPORT_PREVIEW: "/users/import/preview",
+    IMPORT: "/users/import",
+    BULK_DELETE: "/users/bulk-delete",
+  },
+  EXPORTS: {
+    USERS: "/exports/users",
   },
 } as const;

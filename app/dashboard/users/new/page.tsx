@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Trans, useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
+import { useToast } from "@/app/components/shared/ToastContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -22,7 +23,7 @@ import { DEFAULT_USER_PASSWORD, USER_ROLES } from "@/app/constants/user.constant
 export default function NewUserPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const [username, setUsername] = useState("");
@@ -40,9 +41,8 @@ export default function NewUserPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     if (roles.length === 0) {
-      setError(t("usersAdmin.errorRolesRequired"));
+      showToast(t("usersAdmin.errorRolesRequired"), "error");
       return;
     }
     setLoading(true);
@@ -56,9 +56,10 @@ export default function NewUserPage() {
         avatarUrl: avatarUrl || undefined,
         roles,
       });
+      showToast(t("usersAdminNew.createSuccess"));
       router.push("/dashboard/users");
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("usersAdminNew.errorCreateUser"));
+      showToast(err instanceof Error ? err.message : t("usersAdminNew.errorCreateUser"), "error");
     } finally {
       setLoading(false);
     }
@@ -74,8 +75,6 @@ export default function NewUserPage() {
         <CardContent>
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2}>
-              {error && <Alert severity="error">{error}</Alert>}
-
               <Alert severity="info">
                 <Trans
                   i18nKey="usersAdminNew.defaultPasswordNotice"
