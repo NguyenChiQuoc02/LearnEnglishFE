@@ -43,7 +43,8 @@
     "notifications": "Thông báo",
     "reports": "Báo cáo",
     "settings": "Cài đặt",
-    "budget": "Ngân sách"
+    "budget": "Ngân sách",
+    "apiTest": "Test API & Cache"
   },
   "userMenu": {
     "account": "Tài khoản",
@@ -652,5 +653,25 @@
     "emptyNoCourses": "Chưa có khóa học nào.",
     "emptyNoMatch": "Không tìm thấy khóa học phù hợp.",
     "searchCoursePlaceholder": "Tìm theo tiêu đề khóa học"
+  },
+  "apiTestPage": {
+    "title": "Test API & Redis Cache",
+    "subtitle": "Gọi thử 3 API và đo thời gian phản hồi trước và sau khi dùng cache Redis",
+    "runAll": "Chạy tất cả",
+    "run": "Chạy test",
+    "running": "Đang chạy...",
+    "apiProvinces": "Tất cả tỉnh/thành",
+    "apiWards": "Tất cả xã/phường",
+    "apiUsers": "Tất cả người dùng",
+    "columnApi": "API",
+    "columnEndpoint": "Endpoint",
+    "columnRecords": "Số bản ghi",
+    "columnBefore": "Trước Redis (DB)",
+    "columnAfter": "Sau Redis (Cache)",
+    "columnImprovement": "Cải thiện",
+    "fasterBy": "Nhanh hơn {{percent}}%",
+    "slowerBy": "Chậm hơn {{percent}}%",
+    "notRunYet": "Chưa chạy",
+    "errorPrefix": "Lỗi:"
   }
 }

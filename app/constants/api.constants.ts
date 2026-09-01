@@ -29,6 +29,7 @@ export const API_ENDPOINTS = {
   },
   USERS: {
     BASE: "/users",
+    ALL: "/users/all",
     TEACHERS: "/users/teachers",
     DETAIL: (id: number | string) => `/users/${id}`,
     ME: "/users/me",
@@ -44,6 +45,12 @@ export const API_ENDPOINTS = {
   PROVINCES: {
     BASE: "/provinces",
     WARDS: (code: string) => `/provinces/${code}/wards`,
+  },
+  WARDS: {
+    BASE: "/wards",
+  },
+  CACHE_TEST: {
+    CLEAR: "/cache-test/clear",
   },
   NOTIFICATIONS: {
     BASE: "/notifications",

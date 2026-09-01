@@ -24,6 +24,10 @@ export function listUsers(params: { page?: number; size?: number; keyword?: stri
     .then((res) => res.data);
 }
 
+export function listAllUsers() {
+  return axiosClient.get<UserResponse[]>(API_ENDPOINTS.USERS.ALL).then((res) => res.data);
+}
+
 export function getUser(id: number | string) {
   return axiosClient.get<UserResponse>(API_ENDPOINTS.USERS.DETAIL(id)).then((res) => res.data);
 }

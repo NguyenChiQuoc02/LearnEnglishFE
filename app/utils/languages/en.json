@@ -43,7 +43,8 @@
     "notifications": "Notifications",
     "reports": "Reports",
     "settings": "Settings",
-    "budget": "Budget"
+    "budget": "Budget",
+    "apiTest": "API & Cache Test"
   },
   "userMenu": {
     "account": "Account",
@@ -652,5 +653,25 @@
     "emptyNoCourses": "No courses yet.",
     "emptyNoMatch": "No courses match your search.",
     "searchCoursePlaceholder": "Search by course title"
+  },
+  "apiTestPage": {
+    "title": "API & Redis Cache Test",
+    "subtitle": "Call 3 APIs and measure response time before and after Redis caching",
+    "runAll": "Run all",
+    "run": "Run test",
+    "running": "Running...",
+    "apiProvinces": "All provinces",
+    "apiWards": "All wards",
+    "apiUsers": "All users",
+    "columnApi": "API",
+    "columnEndpoint": "Endpoint",
+    "columnRecords": "Records",
+    "columnBefore": "Before Redis (DB)",
+    "columnAfter": "After Redis (Cache)",
+    "columnImprovement": "Improvement",
+    "fasterBy": "{{percent}}% faster",
+    "slowerBy": "{{percent}}% slower",
+    "notRunYet": "Not run yet",
+    "errorPrefix": "Error:"
   }
 }

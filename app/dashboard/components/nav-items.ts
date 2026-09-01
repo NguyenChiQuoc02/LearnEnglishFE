@@ -3,10 +3,11 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
+import SpeedRoundedIcon from "@mui/icons-material/SpeedRounded";
 import type { SvgIconComponent } from "@mui/icons-material";
 
 export type NavItem = {
-  labelKey: "dashboard" | "courses" | "students" | "users" | "notifications" | "budget";
+  labelKey: "dashboard" | "courses" | "students" | "users" | "notifications" | "budget" | "apiTest";
   href: string;
   icon: SvgIconComponent;
 };
@@ -17,4 +18,5 @@ export const navItems: NavItem[] = [
   { labelKey: "users", href: "/dashboard/users", icon: ManageAccountsRoundedIcon },
   { labelKey: "notifications", href: "/dashboard/notifications", icon: NotificationsRoundedIcon },
   { labelKey: "budget", href: "/dashboard/budget", icon: AccountBalanceWalletRoundedIcon },
+  { labelKey: "apiTest", href: "/dashboard/api-test", icon: SpeedRoundedIcon },
 ];

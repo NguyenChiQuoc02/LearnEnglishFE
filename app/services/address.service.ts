@@ -13,3 +13,7 @@ export function listWardsByProvince(provinceCode: string) {
     .get<WardResponse[]>(API_ENDPOINTS.PROVINCES.WARDS(provinceCode))
     .then((res) => res.data);
 }
+
+export function listAllWards() {
+  return axiosClient.get<WardResponse[]>(API_ENDPOINTS.WARDS.BASE).then((res) => res.data);
+}
