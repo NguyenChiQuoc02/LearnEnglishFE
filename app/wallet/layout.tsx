@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -14,8 +15,9 @@ import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
 
-export default function ProfileLayout({ children }: { children: React.ReactNode }) {
+export default function WalletLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!getAuth()) {
@@ -52,7 +54,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
             variant="h6"
             sx={{ fontWeight: 800, flexGrow: 1, color: "inherit", textDecoration: "none" }}
           >
-            Learn English
+            {t("wallet.brand")}
           </Typography>
           <LanguageSwitcher />
           <UserMenu />

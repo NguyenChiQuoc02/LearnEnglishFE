@@ -49,7 +49,10 @@ export default function CoursesPage() {
     setError(null);
     listManagedCourses({ page: targetPage, size: targetSize, keyword: keyword || undefined })
       .then((res) => {
-        setCourses(res.content);
+        const sorted = [...res.content].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setCourses(sorted);
         setTotalElements(res.totalElements);
       })
       .catch((err) => setError(err instanceof Error ? err.message : t("coursesAdmin.errorLoadCourses")))

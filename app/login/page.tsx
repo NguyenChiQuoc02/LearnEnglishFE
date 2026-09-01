@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { login } from "@/app/services/auth.service";
-import { isAdmin, saveAuth } from "@/app/utils/auth-storage";
+import { getAuth, isAdmin, saveAuth } from "@/app/utils/auth-storage";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,6 +24,13 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    if (auth) {
+      router.replace(isAdmin(auth) ? "/dashboard" : "/courses");
+    }
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

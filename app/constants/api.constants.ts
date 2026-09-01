@@ -55,4 +55,22 @@ export const API_ENDPOINTS = {
     LINK_CODE: "/zalo/link-code",
     ME: "/zalo/me",
   },
+  WALLET: {
+    ME: "/wallet/me",
+    TRANSACTIONS: "/wallet/me/transactions",
+    TOPUP: "/wallet/topup",
+    WITHDRAW: "/wallet/withdraw",
+  },
+  PAYMENTS: {
+    COURSE_WALLET: (id: number | string) => `/payments/courses/${id}/wallet`,
+    COURSE_MOMO: (id: number | string) => `/payments/courses/${id}/momo`,
+    MOMO_STATUS: (orderId: number | string) => `/payments/momo/status/${orderId}`,
+  },
+  ADMIN_BUDGET: {
+    OVERVIEW: "/admin/budget/overview",
+    TRANSACTIONS: "/admin/budget/transactions",
+    WITHDRAWALS: "/admin/budget/withdrawals",
+    WITHDRAWAL_APPROVE: (id: number | string) => `/admin/budget/withdrawals/${id}/approve`,
+    WITHDRAWAL_REJECT: (id: number | string) => `/admin/budget/withdrawals/${id}/reject`,
+  },
 } as const;

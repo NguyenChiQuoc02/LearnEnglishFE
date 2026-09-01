@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import BackButton from "@/app/dashboard/components/BackButton";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import { useToast } from "@/app/components/shared/ToastContext";
 import { createCourse } from "@/app/services/course.service";
 import { listTeachers } from "@/app/services/user.service";
 import type { TeacherResponse } from "@/app/types";
@@ -26,6 +27,7 @@ import { COURSE_LEVELS, COURSE_TYPES } from "@/app/constants/course.constants";
 export default function NewCoursePage() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [teachers, setTeachers] = useState<TeacherResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,6 +41,7 @@ export default function NewCoursePage() {
   const [pointsPerCorrect, setPointsPerCorrect] = useState(10);
   const [pointsPerWrong, setPointsPerWrong] = useState(-2);
   const [published, setPublished] = useState(true);
+  const [price, setPrice] = useState(0);
   const [titleError, setTitleError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -76,7 +79,9 @@ export default function NewCoursePage() {
         pointsPerCorrect,
         pointsPerWrong,
         published,
+        price,
       });
+      showToast(t("coursesAdminNew.createSuccess"));
       router.push(`/dashboard/courses/${course.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("coursesAdminNew.errorCreateCourse"));
@@ -166,6 +171,14 @@ export default function NewCoursePage() {
                     </MenuItem>
                   ))}
                 </TextField>
+                <TextField
+                  label={t("coursesAdminNew.fieldPrice")}
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  fullWidth
+                  slotProps={{ htmlInput: { min: 0, step: 1000 } }}
+                />
               </Stack>
 
               <Divider />

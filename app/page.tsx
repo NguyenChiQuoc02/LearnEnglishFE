@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -18,6 +20,7 @@ import RecordVoiceOverRoundedIcon from "@mui/icons-material/RecordVoiceOverRound
 import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import type { SvgIconComponent } from "@mui/icons-material";
 import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
+import { getAuth, isAdmin } from "@/app/utils/auth-storage";
 
 type CourseTrack = {
   nameKey: "vocabularyName" | "toeicName" | "ieltsName" | "vstepName";
@@ -54,6 +57,14 @@ const tracks: CourseTrack[] = [
 
 export default function Home() {
   const { t } = useTranslation();
+  const router = useRouter();
+
+  useEffect(() => {
+    const auth = getAuth();
+    if (auth) {
+      router.replace(isAdmin(auth) ? "/dashboard" : "/courses");
+    }
+  }, [router]);
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>

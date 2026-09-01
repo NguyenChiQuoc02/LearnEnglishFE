@@ -12,6 +12,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { useTranslation } from "react-i18next";
@@ -35,6 +36,11 @@ export default function UserMenu() {
   function handleProfile() {
     handleMenuClose();
     router.push("/profile");
+  }
+
+  function handleWallet() {
+    handleMenuClose();
+    router.push("/wallet");
   }
 
   function handleLogout() {
@@ -84,6 +90,12 @@ export default function UserMenu() {
             <PersonRoundedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t("userMenu.profile")}</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleWallet}>
+          <ListItemIcon>
+            <AccountBalanceWalletRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t("userMenu.wallet")}</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>

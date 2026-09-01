@@ -12,11 +12,13 @@ import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useToast } from "@/app/components/shared/ToastContext";
 import { register } from "@/app/services/auth.service";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,6 +52,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register(username, email, password);
+      showToast(t("register.successRegister"));
       router.push("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("register.errorGeneric"));

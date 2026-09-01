@@ -58,6 +58,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
   const { id } = use(props.params);
   const { t } = useTranslation();
   const router = useRouter();
+  const { showToast } = useToast();
 
   const [course, setCourse] = useState<CourseResponse | null>(null);
   const [words, setWords] = useState<VocabularyItemResponse[]>([]);
@@ -96,8 +97,10 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
         pointsPerCorrect: course.pointsPerCorrect,
         pointsPerWrong: course.pointsPerWrong,
         published: course.published,
+        price: course.price,
       });
       setCourse(updated);
+      showToast(t("courseDetail.saveSuccess"));
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : t("courseDetail.errorSaveCourse"));
     } finally {
@@ -176,6 +179,14 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
                     </MenuItem>
                   ))}
                 </TextField>
+                <TextField
+                  label={t("courseDetail.fieldPrice")}
+                  type="number"
+                  value={course.price}
+                  onChange={(e) => setCourse({ ...course, price: Number(e.target.value) })}
+                  fullWidth
+                  slotProps={{ htmlInput: { min: 0, step: 1000 } }}
+                />
               </Stack>
 
               <Divider />
@@ -268,6 +279,7 @@ function VocabularySection({
   const [editingItem, setEditingItem] = useState<VocabularyItemResponse | null>(null);
   const [deletingItem, setDeletingItem] = useState<VocabularyItemResponse | null>(null);
   const { t } = useTranslation();
+  const { showToast } = useToast();
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -288,6 +300,7 @@ function VocabularySection({
         audioUrl: audioUrl || undefined,
       });
       onAdded(created);
+      showToast(t("courseDetail.vocabulary.addSuccess"));
       setWord("");
       setPhonetic("");
       setPartOfSpeech("");
@@ -510,6 +523,7 @@ function EditVocabularyDialog({
   const [wordError, setWordError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const { t } = useTranslation();
+  const { showToast } = useToast();
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -523,6 +537,7 @@ function EditVocabularyDialog({
     try {
       const updated = await updateVocabularyItem(courseId, item.id, form);
       onSaved(updated);
+      showToast(t("courseDetail.vocabulary.updateSuccess"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("courseDetail.vocabulary.errorUpdateWord"));
     } finally {

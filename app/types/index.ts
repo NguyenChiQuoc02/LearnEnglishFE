@@ -7,4 +7,5 @@ export * from "./export.types";
 export * from "./notification.types";
 export * from "./session.types";
 export * from "./user.types";
+export * from "./wallet.types";
 export * from "./zalo.types";

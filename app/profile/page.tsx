@@ -298,6 +298,7 @@ function ZaloLinkCard() {
     try {
       const res = await generateZaloLinkCode();
       setLinkCode(res);
+      showToast(t("profile.zalo.generateSuccess"));
     } catch (err) {
       showToast(err instanceof Error ? err.message : t("profile.zalo.errorGenerateCode"), "error");
     } finally {
@@ -369,6 +370,7 @@ function ZaloLinkCard() {
 
 function ChangePasswordCard() {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -381,13 +383,11 @@ function ChangePasswordCard() {
     confirmPassword?: string;
   }>({});
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setSuccess(false);
 
     const nextFieldErrors: typeof fieldErrors = {};
     if (!oldPassword) nextFieldErrors.oldPassword = t("profile.errorOldPasswordRequired");
@@ -408,7 +408,7 @@ function ChangePasswordCard() {
     setLoading(true);
     try {
       await changePassword({ oldPassword, newPassword });
-      setSuccess(true);
+      showToast(t("profile.success"));
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -438,11 +438,6 @@ function ChangePasswordCard() {
           {error && (
             <Alert severity="error" sx={{ borderRadius: 2 }}>
               {error}
-            </Alert>
-          )}
-          {success && (
-            <Alert severity="success" sx={{ borderRadius: 2 }}>
-              {t("profile.success")}
             </Alert>
           )}
           <TextField

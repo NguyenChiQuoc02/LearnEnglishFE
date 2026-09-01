@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -23,15 +24,30 @@ export default function CoursesLayout({ children }: { children: React.ReactNode 
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
-      <AppBar position="static" elevation={0} color="inherit" sx={{ borderBottom: "1px solid", borderColor: "divider" }}>
+      <AppBar
+        position="fixed"
+        elevation={0}
+        color="primary"
+        sx={{
+          zIndex: (theme) => theme.zIndex.appBar,
+          backgroundImage: (theme) =>
+            `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+        }}
+      >
         <Toolbar sx={{ gap: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, flexGrow: 1 }}>
+          <Typography
+            component={Link}
+            href="/courses"
+            variant="h6"
+            sx={{ fontWeight: 800, flexGrow: 1, color: "inherit", textDecoration: "none" }}
+          >
             {t("publicCourses.brand")}
           </Typography>
           <LanguageSwitcher />
           <UserMenu />
         </Toolbar>
       </AppBar>
+      <Toolbar />
 
       <Box sx={{ p: { xs: 2, md: 3 } }}>{children}</Box>
     </Box>

@@ -16,6 +16,7 @@ export type CourseResponse = {
   totalWords: number;
   published: boolean;
   createdAt: string;
+  price: number;
 };
 
 export type CourseRequest = {
@@ -29,6 +30,7 @@ export type CourseRequest = {
   pointsPerCorrect?: number;
   pointsPerWrong?: number;
   published?: boolean;
+  price?: number;
 };
 
 export type VocabularyItemResponse = {
