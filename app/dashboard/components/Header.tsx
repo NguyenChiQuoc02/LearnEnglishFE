@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { alpha } from "@mui/material/styles";
@@ -13,6 +14,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
@@ -26,6 +28,18 @@ import { navItems } from "./nav-items";
 export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    function handleShortcut(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, []);
 
   return (
     <AppBar
@@ -51,11 +65,12 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
         <TextField
           size="small"
           placeholder={t("dashboardHeader.searchPlaceholder")}
+          inputRef={searchInputRef}
           sx={{
             display: { xs: "none", md: "block" },
             width: 320,
             "& .MuiOutlinedInput-root": {
-              borderRadius: 3,
+              borderRadius: 999,
               color: "primary.contrastText",
               bgcolor: alpha("#ffffff", 0.12),
               "& fieldset": { borderColor: alpha("#ffffff", 0.3) },
@@ -72,6 +87,23 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchRoundedIcon fontSize="small" sx={{ color: alpha("#ffffff", 0.7) }} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      px: 0.75,
+                      py: 0.25,
+                      borderRadius: 1,
+                      fontWeight: 600,
+                      color: alpha("#ffffff", 0.7),
+                      bgcolor: alpha("#ffffff", 0.14),
+                    }}
+                  >
+                    Ctrl+K
+                  </Typography>
                 </InputAdornment>
               ),
             },

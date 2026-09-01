@@ -4,7 +4,6 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -15,6 +14,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import BackButton from "@/app/dashboard/components/BackButton";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import ZoomableAvatar from "@/app/components/shared/ZoomableAvatar";
 import { getUser } from "@/app/services/user.service";
 import type { UserResponse } from "@/app/types";
 
@@ -71,9 +71,13 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
           <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
             <Stack spacing={3}>
               <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-                <Avatar src={user.avatarUrl ?? undefined} sx={{ width: 64, height: 64, bgcolor: "primary.main" }}>
+                <ZoomableAvatar
+                  src={user.avatarUrl ?? undefined}
+                  alt={user.username}
+                  sx={{ width: 64, height: 64, bgcolor: "primary.main" }}
+                >
                   {user.username[0]?.toUpperCase()}
-                </Avatar>
+                </ZoomableAvatar>
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     {user.username}

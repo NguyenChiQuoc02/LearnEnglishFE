@@ -17,7 +17,6 @@ import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
-import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
 import PauseCircleOutlineRoundedIcon from "@mui/icons-material/PauseCircleOutlineRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import { getCourse } from "@/app/services/course.service";
@@ -78,16 +77,25 @@ function VirtualKeyboard({
   disabled?: boolean;
 }) {
   return (
-    <Stack spacing={1} sx={{ alignItems: "center" }}>
+    <Stack spacing={1.15} sx={{ alignItems: "center" }}>
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <Stack key={row} direction="row" spacing={0.75}>
+        <Stack key={row} direction="row" spacing={0.85}>
           {row.split("").map((letter) => (
             <Button
               key={letter}
               onClick={() => onKeyPress(letter)}
               disabled={disabled}
               variant="outlined"
-              sx={{ minWidth: 36, width: 36, height: 44, borderRadius: 1.5, fontWeight: 700, bgcolor: "white", p: 0 }}
+              sx={{
+                minWidth: 41,
+                width: 41,
+                height: 51,
+                borderRadius: 1.5,
+                fontWeight: 700,
+                fontSize: 16,
+                bgcolor: "white",
+                p: 0,
+              }}
             >
               {letter}
             </Button>
@@ -97,7 +105,7 @@ function VirtualKeyboard({
               onClick={onBackspace}
               disabled={disabled}
               variant="outlined"
-              sx={{ minWidth: 64, height: 44, borderRadius: 1.5, fontWeight: 700, bgcolor: "white" }}
+              sx={{ minWidth: 74, height: 51, borderRadius: 1.5, fontWeight: 700, fontSize: 16, bgcolor: "white" }}
             >
               ⌫
             </Button>
@@ -146,6 +154,10 @@ function DemoLearningSession() {
   useEffect(() => {
     if (currentWord) speak(currentWord.word);
   }, [currentWord]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [wordIndex]);
 
   function appendLetter(letter: string) {
     if (feedback.state !== "idle") return;
@@ -209,7 +221,7 @@ function DemoLearningSession() {
       progress={progress}
       score={score}
       onExit={() => router.push("/")}
-      illustration={<Typography sx={{ fontSize: 56 }}>{currentWord.illustration}</Typography>}
+      illustration={<Typography sx={{ fontSize: 64 }}>{currentWord.illustration}</Typography>}
       phonetic={currentWord.phonetic}
       partOfSpeech={currentWord.partOfSpeech}
       meaning={currentWord.meaning}
@@ -220,7 +232,7 @@ function DemoLearningSession() {
           variant="outlined"
           onClick={giveUpWord}
           disabled={feedback.state !== "idle"}
-          sx={{ bgcolor: "white", whiteSpace: "nowrap" }}
+          sx={{ bgcolor: "white", whiteSpace: "nowrap", fontSize: 15 }}
         >
           {t("learnSession.dontKnowButton")}
         </Button>
@@ -239,7 +251,7 @@ function DemoLearningSession() {
         placeholder={t("learnSession.typePlaceholder")}
         slotProps={{
           input: {
-            sx: { textTransform: "uppercase", fontSize: 20, fontWeight: 700, bgcolor: "white" },
+            sx: { textTransform: "uppercase", fontSize: 23, fontWeight: 700, bgcolor: "white", py: 0.25 },
           },
         }}
         sx={{
@@ -252,17 +264,17 @@ function DemoLearningSession() {
 
       {feedback.state === "idle" && (
         <>
-          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+          <Stack direction="row" spacing={1.15} useFlexGap sx={{ flexWrap: "wrap" }}>
             {letterTiles.map((letter, i) => (
               <Button
                 key={`${letter}-${i}`}
                 onClick={() => appendLetter(letter)}
                 variant="outlined"
                 sx={{
-                  minWidth: 48,
-                  height: 48,
+                  minWidth: 55,
+                  height: 55,
                   borderRadius: 2,
-                  fontSize: 18,
+                  fontSize: 21,
                   fontWeight: 700,
                   position: "relative",
                   bgcolor: "white",
@@ -271,18 +283,23 @@ function DemoLearningSession() {
                 {letter}
                 <Typography
                   component="span"
-                  sx={{ position: "absolute", bottom: 2, right: 4, fontSize: 9, color: "text.secondary" }}
+                  sx={{ position: "absolute", bottom: 2, right: 4, fontSize: 10, color: "text.secondary" }}
                 >
                   {i + 1}
                 </Typography>
               </Button>
             ))}
           </Stack>
-          <Stack direction="row" spacing={1.5}>
-            <Button startIcon={<AutoFixHighRoundedIcon />} variant="outlined" onClick={useHint} sx={{ bgcolor: "white" }}>
+          <Stack direction="row" spacing={1.75}>
+            <Button
+              startIcon={<AutoFixHighRoundedIcon />}
+              variant="outlined"
+              onClick={useHint}
+              sx={{ bgcolor: "white", fontSize: 15 }}
+            >
               {t("learnSession.hintButton")}
             </Button>
-            <Button variant="contained" onClick={submitAnswer} disabled={!answer.trim()}>
+            <Button variant="contained" onClick={submitAnswer} disabled={!answer.trim()} sx={{ fontSize: 15 }}>
               {t("learnSession.checkButton")}
             </Button>
           </Stack>
@@ -349,6 +366,10 @@ function RealLearningSession({ courseId }: { courseId: string }) {
   useEffect(() => {
     if (currentWord?.audioUrl) playAudio(currentWord.audioUrl);
   }, [currentWord]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [wordIndex]);
 
   useEffect(() => {
     if (!isSessionComplete || !session || completion) return;
@@ -483,10 +504,10 @@ function RealLearningSession({ courseId }: { courseId: string }) {
             component="img"
             src={currentWord.imageUrl}
             alt={t("learnSession.illustrationAlt")}
-            sx={{ maxWidth: "100%", maxHeight: 90, borderRadius: 1 }}
+            sx={{ maxWidth: "100%", maxHeight: 104, borderRadius: 1 }}
           />
         ) : (
-          <Typography sx={{ fontSize: 56 }}>📘</Typography>
+          <Typography sx={{ fontSize: 64 }}>📘</Typography>
         )
       }
       phonetic={currentWord.phonetic ?? ""}
@@ -499,7 +520,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
           variant="outlined"
           onClick={() => submitAnswer(true)}
           disabled={feedback.state !== "idle" || submitting}
-          sx={{ bgcolor: "white", whiteSpace: "nowrap" }}
+          sx={{ bgcolor: "white", whiteSpace: "nowrap", fontSize: 15 }}
         >
           {t("learnSession.dontKnowButton")}
         </Button>
@@ -518,7 +539,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         placeholder={t("learnSession.typePlaceholder")}
         slotProps={{
           input: {
-            sx: { textTransform: "uppercase", fontSize: 20, fontWeight: 700, bgcolor: "white" },
+            sx: { textTransform: "uppercase", fontSize: 23, fontWeight: 700, bgcolor: "white", py: 0.25 },
           },
         }}
         sx={{
@@ -532,7 +553,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
       {feedback.state === "idle" && (
         <>
           <VirtualKeyboard onKeyPress={appendLetter} onBackspace={backspace} disabled={submitting} />
-          <Stack direction="row" spacing={1.5}>
+          <Stack direction="row" spacing={1.75}>
             <Tooltip title={t("learnSession.tooltipHint")}>
               <span>
                 <Button
@@ -540,13 +561,18 @@ function RealLearningSession({ courseId }: { courseId: string }) {
                   variant="outlined"
                   onClick={useHint}
                   disabled={submitting}
-                  sx={{ bgcolor: "white" }}
+                  sx={{ bgcolor: "white", fontSize: 15 }}
                 >
                   {t("learnSession.hintButton")}
                 </Button>
               </span>
             </Tooltip>
-            <Button variant="contained" onClick={() => submitAnswer(false)} disabled={!answer.trim() || submitting}>
+            <Button
+              variant="contained"
+              onClick={() => submitAnswer(false)}
+              disabled={!answer.trim() || submitting}
+              sx={{ fontSize: 15 }}
+            >
               {submitting ? t("learnSession.checking") : t("learnSession.checkButton")}
             </Button>
           </Stack>
@@ -694,50 +720,45 @@ function SessionScreen({
   const { t } = useTranslation();
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fdf6e3", display: "flex", flexDirection: "column" }}>
-      <Box sx={{ bgcolor: "#a7e3ee", px: 3, py: 1.5 }}>
+      <Box sx={{ bgcolor: "#a7e3ee", px: 3.5, py: 1.75 }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-          <Typography sx={{ fontSize: 22 }}>🦜</Typography>
-          <Typography variant="h6" sx={{ fontWeight: 800, textDecoration: "underline" }}>
+          <Typography sx={{ fontSize: 25 }}>🦜</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 800, textDecoration: "underline", fontSize: "1.38rem" }}>
             {headerTitle}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title={t("learnSession.tooltipKeyboard")}>
-            <IconButton size="small" sx={{ bgcolor: "white" }}>
-              <KeyboardRoundedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
           <Tooltip title={t("learnSession.tooltipExit")}>
-            <IconButton size="small" sx={{ bgcolor: "white" }} onClick={onExit}>
+            <IconButton sx={{ bgcolor: "white" }} onClick={onExit}>
               <CloseRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ alignItems: "center", px: 3, py: 2, maxWidth: 960, mx: "auto", width: "100%" }}>
-        <LinearProgress variant="determinate" value={progress} sx={{ flexGrow: 1, height: 10, borderRadius: 5 }} />
-        <Chip label={score} sx={{ fontWeight: 700, bgcolor: "white" }} variant="outlined" />
+      <Stack direction="row" spacing={2.3} sx={{ alignItems: "center", px: 3.5, py: 2.3, maxWidth: 1104, mx: "auto", width: "100%" }}>
+        <LinearProgress variant="determinate" value={progress} sx={{ flexGrow: 1, height: 12, borderRadius: 6 }} />
+        <Chip label={score} sx={{ fontWeight: 700, bgcolor: "white", fontSize: 15, height: 37 }} variant="outlined" />
       </Stack>
 
       <Stack
         direction={{ xs: "column", md: "row" }}
-        spacing={4}
+        spacing={4.5}
         sx={{
-          px: { xs: 3, md: 6 },
-          py: 2,
+          px: { xs: 3.5, md: 7 },
+          py: 2.3,
           flexGrow: 1,
           alignItems: { xs: "center", md: "flex-start" },
           justifyContent: "center",
-          maxWidth: 960,
+          maxWidth: 1104,
           mx: "auto",
           width: "100%",
         }}
       >
-        <Stack spacing={1.5} sx={{ alignItems: "center", minWidth: 180 }}>
+        <Stack spacing={1.75} sx={{ alignItems: "center", minWidth: 207 }}>
           <Box
             sx={{
-              width: 180,
-              height: 150,
+              width: 207,
+              height: 173,
               borderRadius: 3,
               bgcolor: "white",
               boxShadow: 1,
@@ -750,19 +771,27 @@ function SessionScreen({
           >
             {illustration}
             {meaning && (
-              <Typography sx={{ color: "#e63946", fontWeight: 700, fontStyle: "italic" }}>{meaning}</Typography>
+              <Typography sx={{ color: "#e63946", fontWeight: 700, fontStyle: "italic", fontSize: "1.15rem" }}>
+                {meaning}
+              </Typography>
             )}
           </Box>
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
             {phonetic && (
-              <Chip label={phonetic} sx={{ bgcolor: "#5fd9c9", color: "white", fontWeight: 700 }} />
+              <Chip
+                label={phonetic}
+                sx={{ bgcolor: "#5fd9c9", color: "white", fontWeight: 700, fontSize: 15, height: 37 }}
+              />
             )}
             {partOfSpeech && (
-              <Chip label={`(${partOfSpeech})`} sx={{ bgcolor: "#5fd9c9", color: "white", fontWeight: 700 }} />
+              <Chip
+                label={`(${partOfSpeech})`}
+                sx={{ bgcolor: "#5fd9c9", color: "white", fontWeight: 700, fontSize: 15, height: 37 }}
+              />
             )}
             {onSpeak && (
               <Tooltip title={t("learnSession.tooltipListen")}>
-                <IconButton size="small" onClick={onSpeak} sx={{ bgcolor: "white", boxShadow: 1 }}>
+                <IconButton onClick={onSpeak} sx={{ bgcolor: "white", boxShadow: 1 }}>
                   <VolumeUpRoundedIcon fontSize="small" sx={{ color: "#1ba9b8" }} />
                 </IconButton>
               </Tooltip>
@@ -770,29 +799,29 @@ function SessionScreen({
           </Stack>
         </Stack>
 
-        <Stack spacing={1.5} sx={{ flexGrow: 1, maxWidth: 520 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 700, letterSpacing: 1 }}>
+        <Stack spacing={1.75} sx={{ flexGrow: 1, maxWidth: 598 }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700, letterSpacing: 1, fontSize: "0.95rem" }}>
             {t("learnSession.englishLabel")}
           </Typography>
           {children}
         </Stack>
 
-        <Stack spacing={2} sx={{ alignItems: "center", minWidth: 140 }}>
+        <Stack spacing={2.3} sx={{ alignItems: "center", minWidth: 161 }}>
           {sideActions}
           <Stack direction="row" spacing={1}>
-            <BoltRoundedIcon sx={{ color: "#f4a300" }} />
-            <PauseCircleOutlineRoundedIcon sx={{ color: "text.disabled" }} />
+            <BoltRoundedIcon sx={{ color: "#f4a300", fontSize: 28 }} />
+            <PauseCircleOutlineRoundedIcon sx={{ color: "text.disabled", fontSize: 28 }} />
           </Stack>
           <Box
             sx={{
-              width: 56,
-              height: 56,
+              width: 64,
+              height: 64,
               borderRadius: "50%",
               bgcolor: "#f0e6d6",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 28,
+              fontSize: 32,
             }}
           >
             🌱

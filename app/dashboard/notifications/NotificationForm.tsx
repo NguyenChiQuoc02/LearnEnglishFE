@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
-import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { listCourses } from "@/app/services/course.service";
 import {
@@ -125,22 +124,11 @@ export default function NotificationForm({
       <Stack spacing={2}>
         <SectionLabel>{t("notificationsAdminNew.sectionContent")}</SectionLabel>
 
-        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-          <Avatar
-            variant="rounded"
-            src={values.imageUrl || undefined}
-            sx={{ width: 56, height: 56, bgcolor: "primary.main" }}
-          >
-            <ImageRoundedIcon />
-          </Avatar>
-          <TextField
-            label={t("notificationsAdminNew.fieldImageUrl")}
-            value={values.imageUrl}
-            onChange={(e) => onChange("imageUrl", e.target.value)}
-            helperText={t("notificationsAdminNew.imageUrlHint")}
-            fullWidth
-          />
-        </Stack>
+        <ImageUploadField
+          label={t("notificationsAdminNew.fieldImageUrl")}
+          value={values.imageUrl}
+          onChange={(url) => onChange("imageUrl", url)}
+        />
 
         <TextField
           label={t("notificationsAdminNew.fieldTitle")}

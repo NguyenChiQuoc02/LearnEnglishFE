@@ -69,6 +69,14 @@
     "refresh": "Refresh",
     "search": "Search"
   },
+  "imageUpload": {
+    "uploadButton": "Upload image",
+    "changeButton": "Change",
+    "uploading": "Uploading...",
+    "remove": "Remove image",
+    "errorUpload": "Failed to upload image",
+    "notConfigured": "Image upload is not configured"
+  },
   "address": {
     "province": "Province / City",
     "ward": "Ward / Commune",
@@ -400,7 +408,7 @@
     "enrollSuccess": "Enrolled successfully",
     "errorEnroll": "Failed to enroll in the course",
     "noDescription": "No description yet.",
-    "wordsAndTeacher": "{{count}} words · Teacher: {{teacher}}",
+    "wordsCount": "{{count}} words",
     "startLearning": "Start learning",
     "enroll": "Enroll",
     "enrolling": "Enrolling...",
@@ -413,7 +421,13 @@
     "searchResultsCount": "{{count}} results for \"{{query}}\"",
     "pageIndicator": "Page {{current}} / {{total}}",
     "prevPage": "Previous page",
-    "nextPage": "Next page"
+    "nextPage": "Next page",
+    "sort": {
+      "newest": "Newest",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low",
+      "titleAsc": "Name: A to Z"
+    }
   },
   "courseLevels": {
     "BEGINNER": "Beginner",
@@ -425,6 +439,7 @@
     "subtitle": "Set up a new course",
     "sectionInfo": "Course information",
     "sectionSettings": "Learning settings",
+    "fieldThumbnailUrl": "Thumbnail",
     "fieldTitle": "Title",
     "fieldDescription": "Description",
     "fieldCourseType": "Course type",
@@ -450,6 +465,7 @@
     "errorTitleRequired": "Please enter a title",
     "sectionInfo": "Course information",
     "sectionSettings": "Learning settings",
+    "fieldThumbnailUrl": "Thumbnail",
     "fieldTitle": "Title",
     "fieldDescription": "Description",
     "fieldCourseType": "Course type",
@@ -534,7 +550,6 @@
     "errorStartSession": "Could not start the lesson",
     "errorCompleteSession": "Could not complete the lesson",
     "errorSubmitAnswer": "Could not record the answer",
-    "tooltipKeyboard": "Keyboard",
     "tooltipExit": "Exit",
     "tooltipListen": "Listen to pronunciation",
     "tooltipHint": "Reveal one more letter of the word",

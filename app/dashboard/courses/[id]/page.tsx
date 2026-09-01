@@ -34,6 +34,7 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import BackButton from "@/app/dashboard/components/BackButton";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import { useToast } from "@/app/components/shared/ToastContext";
 import {
   addVocabularyItem,
@@ -92,6 +93,7 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
         description: course.description ?? undefined,
         courseType: course.courseType,
         level: course.level ?? undefined,
+        thumbnailUrl: course.thumbnailUrl ?? undefined,
         teacherId: course.teacherId,
         wordsPerSession: course.wordsPerSession,
         pointsPerCorrect: course.pointsPerCorrect,
@@ -127,6 +129,12 @@ export default function CourseDetailPage(props: PageProps<"/dashboard/courses/[i
 
               <Stack spacing={2}>
                 <SectionLabel>{t("courseDetail.sectionInfo")}</SectionLabel>
+
+                <ImageUploadField
+                  label={t("courseDetail.fieldThumbnailUrl")}
+                  value={course.thumbnailUrl ?? ""}
+                  onChange={(url) => setCourse({ ...course, thumbnailUrl: url || null })}
+                />
 
                 <TextField
                   label={t("courseDetail.fieldTitle")}
@@ -402,20 +410,17 @@ function VocabularySection({
                 onChange={(e) => setMeaning(e.target.value)}
                 fullWidth
               />
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  label={t("courseDetail.vocabulary.fieldImageUrl")}
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  fullWidth
-                />
-                <TextField
-                  label={t("courseDetail.vocabulary.fieldAudioUrl")}
-                  value={audioUrl}
-                  onChange={(e) => setAudioUrl(e.target.value)}
-                  fullWidth
-                />
-              </Stack>
+              <ImageUploadField
+                label={t("courseDetail.vocabulary.fieldImageUrl")}
+                value={imageUrl}
+                onChange={setImageUrl}
+              />
+              <TextField
+                label={t("courseDetail.vocabulary.fieldAudioUrl")}
+                value={audioUrl}
+                onChange={(e) => setAudioUrl(e.target.value)}
+                fullWidth
+              />
               <Button type="submit" variant="contained" disabled={adding} sx={{ alignSelf: "flex-start" }}>
                 {adding ? t("courseDetail.vocabulary.adding") : t("courseDetail.vocabulary.addWord")}
               </Button>
@@ -593,20 +598,17 @@ function EditVocabularyDialog({
               onChange={(e) => setForm({ ...form, exampleTranslation: e.target.value })}
               fullWidth
             />
-            <Stack direction="row" spacing={2}>
-              <TextField
-                label={t("courseDetail.vocabulary.fieldImageUrl")}
-                value={form.imageUrl}
-                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                fullWidth
-              />
-              <TextField
-                label={t("courseDetail.vocabulary.fieldAudioUrl")}
-                value={form.audioUrl}
-                onChange={(e) => setForm({ ...form, audioUrl: e.target.value })}
-                fullWidth
-              />
-            </Stack>
+            <ImageUploadField
+              label={t("courseDetail.vocabulary.fieldImageUrl")}
+              value={form.imageUrl ?? ""}
+              onChange={(url) => setForm({ ...form, imageUrl: url })}
+            />
+            <TextField
+              label={t("courseDetail.vocabulary.fieldAudioUrl")}
+              value={form.audioUrl}
+              onChange={(e) => setForm({ ...form, audioUrl: e.target.value })}
+              fullWidth
+            />
           </Stack>
         </DialogContent>
         <DialogActions>

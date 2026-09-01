@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trans, useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
 import { useToast } from "@/app/components/shared/ToastContext";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -20,6 +19,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import BackButton from "@/app/dashboard/components/BackButton";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import { createUser } from "@/app/services/user.service";
 import { DEFAULT_USER_PASSWORD, USER_ROLES } from "@/app/constants/user.constants";
 import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
@@ -109,17 +109,12 @@ export default function NewUserPage() {
               <Stack spacing={2}>
                 <SectionLabel>{t("usersAdminNew.sectionPersonalInfo")}</SectionLabel>
 
-                <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-                  <Avatar src={avatarUrl || undefined} sx={{ width: 56, height: 56, bgcolor: "primary.main" }}>
-                    {username[0]?.toUpperCase()}
-                  </Avatar>
-                  <TextField
-                    label={t("usersAdmin.fieldAvatarUrl")}
-                    value={avatarUrl}
-                    onChange={(e) => setAvatarUrl(e.target.value)}
-                    fullWidth
-                  />
-                </Stack>
+                <ImageUploadField
+                  label={t("usersAdmin.fieldAvatarUrl")}
+                  value={avatarUrl}
+                  onChange={setAvatarUrl}
+                  shape="circular"
+                />
 
                 <TextField
                   label={t("usersAdmin.fieldUsername")}

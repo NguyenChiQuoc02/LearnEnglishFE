@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
@@ -30,7 +29,9 @@ import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import DataTable from "@/app/components/shared/DataTable";
 import type { DataTableColumn } from "@/app/components/shared/DataTable";
+import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
+import ZoomableAvatar from "@/app/components/shared/ZoomableAvatar";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { bulkDeleteUsers, deleteUser, listUsers, updateUser } from "@/app/services/user.service";
 import type { UserRequest, UserResponse } from "@/app/types";
@@ -99,9 +100,13 @@ export default function UsersPage() {
       header: t("usersAdmin.columnUsername"),
       render: (user) => (
         <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-          <Avatar src={user.avatarUrl ?? undefined} sx={{ width: 32, height: 32, bgcolor: "primary.main" }}>
+          <ZoomableAvatar
+            src={user.avatarUrl ?? undefined}
+            alt={user.username}
+            sx={{ width: 32, height: 32, bgcolor: "primary.main" }}
+          >
             {user.username[0]?.toUpperCase()}
-          </Avatar>
+          </ZoomableAvatar>
           <Typography sx={{ fontWeight: 600 }}>{user.username}</Typography>
         </Stack>
       ),
@@ -341,17 +346,12 @@ function EditUserDialog({
       <Box component="form" onSubmit={handleSave} noValidate>
         <DialogContent>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
-              <Avatar src={form.avatarUrl || undefined} sx={{ width: 56, height: 56, bgcolor: "primary.main" }}>
-                {form.username[0]?.toUpperCase()}
-              </Avatar>
-              <TextField
-                label={t("usersAdmin.fieldAvatarUrl")}
-                value={form.avatarUrl}
-                onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-                fullWidth
-              />
-            </Stack>
+            <ImageUploadField
+              label={t("usersAdmin.fieldAvatarUrl")}
+              value={form.avatarUrl ?? ""}
+              onChange={(url) => setForm({ ...form, avatarUrl: url })}
+              shape="circular"
+            />
             <TextField
               label={t("usersAdmin.fieldUsername")}
               value={form.username}

@@ -69,6 +69,14 @@
     "refresh": "Làm mới",
     "search": "Tìm kiếm"
   },
+  "imageUpload": {
+    "uploadButton": "Tải ảnh lên",
+    "changeButton": "Đổi ảnh",
+    "uploading": "Đang tải lên...",
+    "remove": "Xóa ảnh",
+    "errorUpload": "Tải ảnh lên thất bại",
+    "notConfigured": "Chưa cấu hình tải ảnh lên"
+  },
   "address": {
     "province": "Tỉnh / Thành phố",
     "ward": "Xã / Phường",
@@ -400,7 +408,7 @@
     "enrollSuccess": "Đăng ký khóa học thành công",
     "errorEnroll": "Đăng ký khóa học thất bại",
     "noDescription": "Chưa có mô tả.",
-    "wordsAndTeacher": "{{count}} từ vựng · Giáo viên: {{teacher}}",
+    "wordsCount": "{{count}} từ vựng",
     "startLearning": "Bắt đầu học",
     "enroll": "Đăng ký học",
     "enrolling": "Đang đăng ký...",
@@ -413,7 +421,13 @@
     "searchResultsCount": "{{count}} kết quả cho \"{{query}}\"",
     "pageIndicator": "Trang {{current}} / {{total}}",
     "prevPage": "Trang trước",
-    "nextPage": "Trang sau"
+    "nextPage": "Trang sau",
+    "sort": {
+      "newest": "Mới nhất",
+      "priceAsc": "Giá: thấp đến cao",
+      "priceDesc": "Giá: cao đến thấp",
+      "titleAsc": "Tên: A đến Z"
+    }
   },
   "courseLevels": {
     "BEGINNER": "Mới bắt đầu",
@@ -425,6 +439,7 @@
     "subtitle": "Thiết lập khóa học mới",
     "sectionInfo": "Thông tin khóa học",
     "sectionSettings": "Cấu hình học tập",
+    "fieldThumbnailUrl": "Ảnh đại diện khóa học",
     "fieldTitle": "Tiêu đề",
     "fieldDescription": "Mô tả",
     "fieldCourseType": "Loại khóa học",
@@ -450,6 +465,7 @@
     "errorTitleRequired": "Vui lòng nhập tiêu đề",
     "sectionInfo": "Thông tin khóa học",
     "sectionSettings": "Cấu hình học tập",
+    "fieldThumbnailUrl": "Ảnh đại diện khóa học",
     "fieldTitle": "Tiêu đề",
     "fieldDescription": "Mô tả",
     "fieldCourseType": "Loại khóa học",
@@ -534,7 +550,6 @@
     "errorStartSession": "Không thể bắt đầu bài học",
     "errorCompleteSession": "Không thể hoàn thành bài học",
     "errorSubmitAnswer": "Không thể ghi nhận câu trả lời",
-    "tooltipKeyboard": "Bàn phím",
     "tooltipExit": "Thoát",
     "tooltipListen": "Nghe phát âm",
     "tooltipHint": "Hiển thị thêm 1 ký tự của từ cần gõ",

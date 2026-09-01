@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { alpha, useTheme } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -28,7 +27,9 @@ import { changePassword } from "@/app/services/auth.service";
 import { getMyProfile, updateMyProfile } from "@/app/services/user.service";
 import { generateZaloLinkCode, getMyZaloStatus } from "@/app/services/zalo.service";
 import { useAuth } from "@/app/utils/auth-storage";
+import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
+import ZoomableAvatar from "@/app/components/shared/ZoomableAvatar";
 import { useToast } from "@/app/components/shared/ToastContext";
 import type { UserResponse, ZaloLinkCodeResponse } from "@/app/types";
 
@@ -36,6 +37,11 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const auth = useAuth();
   const theme = useTheme();
+  const [profile, setProfile] = useState<UserResponse | null>(null);
+
+  useEffect(() => {
+    getMyProfile().then(setProfile);
+  }, []);
 
   return (
     <Stack spacing={3} sx={{ maxWidth: 640, mx: "auto" }}>
@@ -79,7 +85,9 @@ export default function ProfilePage() {
           spacing={2.5}
           sx={{ alignItems: { xs: "flex-start", sm: "center" }, position: "relative" }}
         >
-          <Avatar
+          <ZoomableAvatar
+            src={profile?.avatarUrl ?? undefined}
+            alt={auth?.username}
             sx={{
               width: 88,
               height: 88,
@@ -93,7 +101,7 @@ export default function ProfilePage() {
             }}
           >
             {auth?.username?.[0]?.toUpperCase() ?? "?"}
-          </Avatar>
+          </ZoomableAvatar>
           <Box sx={{ minWidth: 0 }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
               <Typography variant="h5" sx={{ fontWeight: 800 }}>
@@ -136,7 +144,7 @@ export default function ProfilePage() {
         </Stack>
       </Card>
 
-      <PersonalInfoCard />
+      <PersonalInfoCard profile={profile} onProfileChange={setProfile} />
 
       <ZaloLinkCard />
 
@@ -192,21 +200,16 @@ function SectionCard({
   );
 }
 
-function PersonalInfoCard() {
+function PersonalInfoCard({
+  profile,
+  onProfileChange,
+}: {
+  profile: UserResponse | null;
+  onProfileChange: (profile: UserResponse) => void;
+}) {
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const [profile, setProfile] = useState<UserResponse | null>(null);
-  const [provinceCode, setProvinceCode] = useState("");
-  const [wardCode, setWardCode] = useState("");
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    getMyProfile().then((data) => {
-      setProfile(data);
-      setProvinceCode(data.provinceCode ?? "");
-      setWardCode(data.wardCode ?? "");
-    });
-  }, []);
 
   async function handleSave() {
     if (!profile) return;
@@ -217,10 +220,10 @@ function PersonalInfoCard() {
         dateOfBirth: profile.dateOfBirth ?? undefined,
         address: profile.address ?? undefined,
         avatarUrl: profile.avatarUrl ?? undefined,
-        provinceCode: provinceCode || undefined,
-        wardCode: wardCode || undefined,
+        provinceCode: profile.provinceCode ?? undefined,
+        wardCode: profile.wardCode ?? undefined,
       });
-      setProfile(updated);
+      onProfileChange(updated);
       showToast(t("address.saveSuccess"));
     } catch (err) {
       showToast(err instanceof Error ? err.message : t("address.errorSave"), "error");
@@ -234,18 +237,24 @@ function PersonalInfoCard() {
   return (
     <SectionCard icon={<PersonRoundedIcon />} title={t("profile.personalInfoTitle")}>
       <Stack spacing={2}>
+        <ImageUploadField
+          label={t("usersAdmin.fieldAvatarUrl")}
+          value={profile.avatarUrl ?? ""}
+          onChange={(url) => onProfileChange({ ...profile, avatarUrl: url })}
+          shape="circular"
+        />
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
           <TextField
             label={t("usersAdmin.fieldPhone")}
             value={profile.phoneNumber ?? ""}
-            onChange={(e) => setProfile({ ...profile, phoneNumber: e.target.value })}
+            onChange={(e) => onProfileChange({ ...profile, phoneNumber: e.target.value })}
             fullWidth
           />
           <TextField
             label={t("usersAdmin.fieldDateOfBirth")}
             type="date"
             value={profile.dateOfBirth ?? ""}
-            onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
+            onChange={(e) => onProfileChange({ ...profile, dateOfBirth: e.target.value })}
             slotProps={{ inputLabel: { shrink: true } }}
             fullWidth
           />
@@ -253,15 +262,12 @@ function PersonalInfoCard() {
         <TextField
           label={t("usersAdmin.fieldAddress")}
           value={profile.address ?? ""}
-          onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+          onChange={(e) => onProfileChange({ ...profile, address: e.target.value })}
           fullWidth
         />
         <ProvinceWardSelect
-          value={{ provinceCode, wardCode }}
-          onChange={(v) => {
-            setProvinceCode(v.provinceCode);
-            setWardCode(v.wardCode);
-          }}
+          value={{ provinceCode: profile.provinceCode ?? "", wardCode: profile.wardCode ?? "" }}
+          onChange={(v) => onProfileChange({ ...profile, provinceCode: v.provinceCode, wardCode: v.wardCode })}
         />
         <Button
           variant="contained"

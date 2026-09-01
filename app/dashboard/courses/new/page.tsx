@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import BackButton from "@/app/dashboard/components/BackButton";
 import SectionLabel from "@/app/dashboard/components/SectionLabel";
+import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { createCourse } from "@/app/services/course.service";
 import { listTeachers } from "@/app/services/user.service";
@@ -37,6 +38,7 @@ export default function NewCoursePage() {
   const [courseType, setCourseType] = useState<string>(COURSE_TYPES[0]);
   const [level, setLevel] = useState<string>(COURSE_LEVELS[0]);
   const [teacherId, setTeacherId] = useState<string>("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [wordsPerSession, setWordsPerSession] = useState(10);
   const [pointsPerCorrect, setPointsPerCorrect] = useState(10);
   const [pointsPerWrong, setPointsPerWrong] = useState(-2);
@@ -74,6 +76,7 @@ export default function NewCoursePage() {
         description: description || undefined,
         courseType: courseType as (typeof COURSE_TYPES)[number],
         level: (level || undefined) as (typeof COURSE_LEVELS)[number] | undefined,
+        thumbnailUrl: thumbnailUrl || undefined,
         teacherId: Number(teacherId),
         wordsPerSession,
         pointsPerCorrect,
@@ -111,6 +114,12 @@ export default function NewCoursePage() {
 
               <Stack spacing={2}>
                 <SectionLabel>{t("coursesAdminNew.sectionInfo")}</SectionLabel>
+
+                <ImageUploadField
+                  label={t("coursesAdminNew.fieldThumbnailUrl")}
+                  value={thumbnailUrl}
+                  onChange={setThumbnailUrl}
+                />
 
                 <TextField
                   label={t("coursesAdminNew.fieldTitle")}
