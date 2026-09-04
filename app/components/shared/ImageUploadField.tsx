@@ -13,7 +13,7 @@ import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
 import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
 import ZoomableAvatar from "@/app/components/shared/ZoomableAvatar";
 import { useToast } from "@/app/components/shared/ToastContext";
-import { uploadImageToCloudinary } from "@/app/services/upload.service";
+import { uploadImage } from "@/app/services/fileUpload.service";
 
 export default function ImageUploadField({
   label,
@@ -39,7 +39,7 @@ export default function ImageUploadField({
 
     setUploading(true);
     try {
-      const url = await uploadImageToCloudinary(file);
+      const url = await uploadImage(file);
       onChange(url);
     } catch (err) {
       showToast(err instanceof Error ? err.message : t("imageUpload.errorUpload"), "error");

@@ -50,7 +50,14 @@
     },
     "rankingTitle": "Xếp hạng theo điểm số trong từng khóa học",
     "rankingDescription": "Mỗi lượt học 10 từ: trả lời đúng +10 điểm, trả lời sai -2 điểm. Điểm tích lũy quyết định vị trí của bạn trên bảng xếp hạng khóa học.",
-    "rankingCta": "Xem thử bài học"
+    "rankingCta": "Xem thử bài học",
+    "featuredCoursesTitle": "Khóa học nổi bật",
+    "featuredCoursesSubtitle": "Xem qua một số khóa học đã xuất bản — đăng nhập để đăng ký và bắt đầu học",
+    "featuredCoursesCta": "Đăng ký học",
+    "featuredCoursesFree": "Miễn phí",
+    "featuredCoursesNoDescription": "Chưa có mô tả",
+    "featuredCoursesEmpty": "Chưa có khóa học nào được xuất bản",
+    "featuredCoursesError": "Không tải được danh sách khóa học"
   },
   "practicePage": {
     "heroBadge": "Luyện tập mỗi ngày để thành thạo",
@@ -547,6 +554,7 @@
   },
   "publicCourses": {
     "brand": "Learn English",
+    "featuredTitle": "Khóa học nổi bật",
     "title": "Khóa học",
     "subtitle": "Đăng ký khóa học và bắt đầu luyện từ vựng.",
     "subtitleCount": "{{count}} khóa học đang mở đăng ký",
@@ -862,6 +870,18 @@
     "deleteSuccess": "Đã xóa file",
     "deleteError": "Xóa file thất bại",
     "fetchError": "Không lấy được danh sách file"
+  },
+  "settingsPage": {
+    "title": "Cài đặt",
+    "subtitle": "Quản lý cấu hình chung của hệ thống",
+    "uploadMethodLabel": "Hình thức upload file",
+    "uploadMethodMinio": "MinIO",
+    "uploadMethodMinioDesc": "Upload file qua backend lên kho lưu trữ MinIO tự quản lý",
+    "uploadMethodCloudinary": "Cloudinary",
+    "uploadMethodCloudinaryDesc": "Upload ảnh trực tiếp từ trình duyệt lên Cloudinary",
+    "saveSuccess": "Đã lưu cài đặt",
+    "saveError": "Lưu cài đặt thất bại",
+    "fetchError": "Không lấy được cấu hình"
   },
   "landingFooter": {
     "description": "Trao quyền cho học viên trên toàn thế giới nói tiếng Anh tự tin qua các bài học tương tác và thực hành thực tế.",

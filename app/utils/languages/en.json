@@ -50,7 +50,14 @@
     },
     "rankingTitle": "Leaderboard ranked by score in every course",
     "rankingDescription": "Every set of 10 words: a correct answer is +10 points, a wrong answer is -2 points. Your accumulated score decides your position on the course leaderboard.",
-    "rankingCta": "Try a sample lesson"
+    "rankingCta": "Try a sample lesson",
+    "featuredCoursesTitle": "Featured courses",
+    "featuredCoursesSubtitle": "Browse a sample of our published courses — sign in to enroll and start learning",
+    "featuredCoursesCta": "Register to learn",
+    "featuredCoursesFree": "Free",
+    "featuredCoursesNoDescription": "No description available",
+    "featuredCoursesEmpty": "No courses published yet",
+    "featuredCoursesError": "Could not load courses"
   },
   "practicePage": {
     "heroBadge": "Practice makes fluent",
@@ -547,6 +554,7 @@
   },
   "publicCourses": {
     "brand": "Learn English",
+    "featuredTitle": "Featured courses",
     "title": "Courses",
     "subtitle": "Enroll in courses and start practicing vocabulary.",
     "subtitleCount": "{{count}} courses open for enrollment",
@@ -862,6 +870,18 @@
     "deleteSuccess": "File deleted",
     "deleteError": "Failed to delete file",
     "fetchError": "Could not load the file list"
+  },
+  "settingsPage": {
+    "title": "Settings",
+    "subtitle": "Manage system-wide configuration",
+    "uploadMethodLabel": "File upload method",
+    "uploadMethodMinio": "MinIO",
+    "uploadMethodMinioDesc": "Upload files through the backend to self-hosted MinIO object storage",
+    "uploadMethodCloudinary": "Cloudinary",
+    "uploadMethodCloudinaryDesc": "Upload images directly from the browser to Cloudinary",
+    "saveSuccess": "Settings saved",
+    "saveError": "Failed to save settings",
+    "fetchError": "Could not load settings"
   },
   "landingFooter": {
     "description": "Empowering learners worldwide to speak English confidently through interactive lessons and real-life practice.",

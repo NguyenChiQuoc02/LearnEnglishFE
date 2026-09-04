@@ -11,12 +11,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import ChatBubbleOutlineRoundedIcon from "@mui/icons-material/ChatBubbleOutlineRounded";
 import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
+import { usePageTitle } from "@/app/utils/usePageTitle";
 
-export type MarketingNavKey = "navHome" | "navCourses" | "navPractice" | "navResources" | "navAbout";
+export type MarketingNavKey = "navHome" | "navPractice" | "navResources" | "navAbout";
 
 const NAV_LINKS: { labelKey: MarketingNavKey; href: string }[] = [
   { labelKey: "navHome", href: "/" },
-  { labelKey: "navCourses", href: "/courses" },
   { labelKey: "navPractice", href: "/practice" },
   { labelKey: "navResources", href: "/resources" },
   { labelKey: "navAbout", href: "/about" },
@@ -24,6 +24,7 @@ const NAV_LINKS: { labelKey: MarketingNavKey; href: string }[] = [
 
 export default function MarketingHeader({ active }: { active: MarketingNavKey }) {
   const { t } = useTranslation();
+  usePageTitle(t(`landing.${active}`));
 
   return (
     <AppBar

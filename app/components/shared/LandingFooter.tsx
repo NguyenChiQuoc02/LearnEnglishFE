@@ -27,7 +27,7 @@ const SOCIAL_LINKS = [
 ];
 
 // "All Courses" and the Resources/Company columns now point at real routes
-// (/courses, /resources, /about). Careers and Partnership have no corresponding
+// (/courses-public, /resources, /about). Careers and Partnership have no corresponding
 // page yet, so those two remain inert placeholders ("#") rather than fake destinations.
 const FOOTER_COLUMNS: {
   titleKey: "coursesTitle" | "resourcesTitle" | "companyTitle";
@@ -36,7 +36,7 @@ const FOOTER_COLUMNS: {
   {
     titleKey: "coursesTitle",
     links: [
-      { labelKey: "coursesAll", href: "/courses" },
+      { labelKey: "coursesAll", href: "/courses-public" },
       { labelKey: "coursesBeginner", href: "#" },
       { labelKey: "coursesIntermediate", href: "#" },
       { labelKey: "coursesAdvanced", href: "#" },

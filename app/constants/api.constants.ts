@@ -57,6 +57,9 @@ export const API_ENDPOINTS = {
     FILES: "/minio/files",
     FILE_DETAIL: (objectName: string) => `/minio/files/${encodeURIComponent(objectName)}`,
   },
+  CONFIG: {
+    UPLOAD_METHOD: "/config/upload-method",
+  },
   NOTIFICATIONS: {
     BASE: "/notifications",
     DETAIL: (id: number | string) => `/notifications/${id}`,

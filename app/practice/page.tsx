@@ -76,7 +76,7 @@ function PracticePageContent() {
           >
             {t("practicePage.ctaStart")}
           </Button>
-          <Button component={Link} href="/courses" size="large" variant="outlined" sx={{ borderRadius: 999, px: 3 }}>
+          <Button component={Link} href="/courses-public" size="large" variant="outlined" sx={{ borderRadius: 999, px: 3 }}>
             {t("practicePage.ctaBrowseCourses")}
           </Button>
         </Stack>

@@ -31,7 +31,7 @@ export default function LoginPage() {
   useEffect(() => {
     const auth = getAuth();
     if (auth) {
-      router.replace(isAdmin(auth) ? "/dashboard" : "/courses");
+      router.replace(isAdmin(auth) ? "/dashboard" : "/courses-public");
     }
   }, [router]);
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
     try {
       const auth = await login(username, password);
       saveAuth(auth);
-      router.push(isAdmin(auth) ? "/dashboard" : "/courses");
+      router.push(isAdmin(auth) ? "/dashboard" : "/courses-public");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("login.errorGeneric"));
     } finally {

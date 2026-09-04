@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -23,6 +24,7 @@ import MomoQrDialog from "@/app/components/shared/MomoQrDialog";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { getMomoStatus } from "@/app/services/payment.service";
 import { createTopup, createWithdrawal, getMyWallet, listMyTransactions } from "@/app/services/wallet.service";
+import { getAuth } from "@/app/utils/auth-storage";
 import type {
   WalletResponse,
   WalletTransactionResponse,
@@ -43,6 +45,7 @@ const STATUS_COLOR: Record<WalletTransactionStatus, "success" | "warning" | "err
 export default function WalletPage() {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const router = useRouter();
   const [wallet, setWallet] = useState<WalletResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [topupOpen, setTopupOpen] = useState(false);
@@ -72,11 +75,18 @@ export default function WalletPage() {
   }
 
   useEffect(() => {
+    // The layout's auth check alone doesn't stop this page from mounting and fetching data
+    // (layouts don't gate route rendering here), so guard the fetches themselves too.
+    if (!getAuth()) {
+      router.replace("/login");
+      return;
+    }
     loadWallet();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router]);
 
   useEffect(() => {
+    if (!getAuth()) return;
     loadTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, rowsPerPage]);

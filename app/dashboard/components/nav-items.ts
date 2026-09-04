@@ -5,6 +5,7 @@ import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import ScienceRoundedIcon from "@mui/icons-material/ScienceRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import SpeedRoundedIcon from "@mui/icons-material/SpeedRounded";
 import type { SvgIconComponent } from "@mui/icons-material";
 
@@ -15,6 +16,7 @@ export type NavLabelKey =
   | "users"
   | "notifications"
   | "budget"
+  | "settings"
   | "testing"
   | "apiTest"
   | "minioUpload";
@@ -38,6 +40,7 @@ export const navItems: NavItem[] = [
   { labelKey: "users", href: "/dashboard/users", icon: ManageAccountsRoundedIcon },
   { labelKey: "notifications", href: "/dashboard/notifications", icon: NotificationsRoundedIcon },
   { labelKey: "budget", href: "/dashboard/budget", icon: AccountBalanceWalletRoundedIcon },
+  { labelKey: "settings", href: "/dashboard/settings", icon: SettingsRoundedIcon },
   {
     labelKey: "testing",
     href: "/dashboard/api-test",

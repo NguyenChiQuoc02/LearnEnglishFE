@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { alpha } from "@mui/material/styles";
 import type { SxProps, Theme } from "@mui/material/styles";
+import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import Box from "@mui/material/Box";
@@ -15,6 +16,7 @@ import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
@@ -23,6 +25,7 @@ import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import Groups2RoundedIcon from "@mui/icons-material/Groups2Rounded";
 import HeadphonesRoundedIcon from "@mui/icons-material/HeadphonesRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import RecordVoiceOverRoundedIcon from "@mui/icons-material/RecordVoiceOverRounded";
 import SpellcheckRoundedIcon from "@mui/icons-material/SpellcheckRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -31,7 +34,9 @@ import type { SvgIconComponent } from "@mui/icons-material";
 import LandingFooter from "@/app/components/shared/LandingFooter";
 import MarketingHeader from "@/app/components/shared/MarketingHeader";
 import MarketingThemeProvider from "@/app/components/shared/MarketingThemeProvider";
+import { listCourses } from "@/app/services/course.service";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
+import type { CourseResponse } from "@/app/types";
 
 type CourseTrack = {
   nameKey: "vocabularyName" | "toeicName" | "ieltsName" | "vstepName";
@@ -137,16 +142,46 @@ function ScriptUnderline() {
   );
 }
 
+function formatVnd(amount: number) {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
+}
+
 function LandingPageContent() {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const [publicCourses, setPublicCourses] = useState<CourseResponse[] | null>(null);
+  const [coursesError, setCoursesError] = useState<string | null>(null);
+
   useEffect(() => {
     const auth = getAuth();
     if (auth) {
-      router.replace(isAdmin(auth) ? "/dashboard" : "/courses");
+      router.replace(isAdmin(auth) ? "/dashboard" : "/courses-public");
     }
   }, [router]);
+
+  useEffect(() => {
+    listCourses()
+      .then((courses) => {
+        const sorted = [...courses].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setPublicCourses(sorted.slice(0, 6));
+      })
+      .catch((err) => setCoursesError(err instanceof Error ? err.message : t("landing.featuredCoursesError")));
+  }, [t]);
+
+  // "Đăng ký học" always routes through auth state rather than straight to a course: a signed-in
+  // visitor should land on their own course list (or the admin dashboard), while a guest must log
+  // in first — enrollment itself only happens from the authenticated /courses-public catalog.
+  function handleRegisterClick() {
+    const auth = getAuth();
+    if (!auth) {
+      router.push("/login");
+      return;
+    }
+    router.push(isAdmin(auth) ? "/dashboard" : "/courses-public");
+  }
 
   return (
     <Box id="top" sx={{ bgcolor: "background.default" }}>
@@ -433,6 +468,150 @@ function LandingPageContent() {
             </Card>
           ))}
         </Box>
+      </Container>
+
+      <Container id="featured-courses" maxWidth="lg" sx={{ pb: { xs: 6, md: 10 } }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, textAlign: "center" }}>
+          {t("landing.featuredCoursesTitle")}
+        </Typography>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ textAlign: "center", mt: 1, maxWidth: 560, mx: "auto" }}
+        >
+          {t("landing.featuredCoursesSubtitle")}
+        </Typography>
+
+        {coursesError && (
+          <Alert severity="error" sx={{ mt: 3 }}>
+            {coursesError}
+          </Alert>
+        )}
+
+        {!publicCourses && !coursesError && (
+          <Box
+            sx={{
+              mt: 4,
+              display: "grid",
+              gap: 3,
+              gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" },
+            }}
+          >
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} variant="rounded" height={260} sx={{ borderRadius: 4 }} />
+            ))}
+          </Box>
+        )}
+
+        {publicCourses && publicCourses.length === 0 && !coursesError && (
+          <Typography color="text.secondary" sx={{ textAlign: "center", mt: 4 }}>
+            {t("landing.featuredCoursesEmpty")}
+          </Typography>
+        )}
+
+        {publicCourses && publicCourses.length > 0 && (
+          <Box
+            sx={{
+              mt: 4,
+              display: "grid",
+              gap: 3,
+              gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" },
+            }}
+          >
+            {publicCourses.map((course) => (
+              <Card
+                key={course.id}
+                variant="outlined"
+                sx={{ height: "100%", display: "flex", flexDirection: "column", borderRadius: 4, p: 2.5 }}
+              >
+                <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                  {course.thumbnailUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- remote Cloudinary/MinIO URL, no next/image domain config in this project
+                    <img
+                      src={course.thumbnailUrl}
+                      alt={course.title}
+                      style={{ width: 56, height: 56, borderRadius: 14, objectFit: "cover", flexShrink: 0 }}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: "14px",
+                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.12),
+                      }}
+                    >
+                      <MenuBookRoundedIcon sx={{ color: "primary.main" }} />
+                    </Box>
+                  )}
+
+                  <Stack spacing={0.75} sx={{ justifyContent: "center" }}>
+                    <Stack direction="row" spacing={0.75} sx={{ flexWrap: "wrap", gap: 0.75 }}>
+                      <Chip
+                        size="small"
+                        label={course.courseType}
+                        sx={{
+                          fontWeight: 700,
+                          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                          color: "primary.main",
+                        }}
+                      />
+                      <Chip
+                        size="small"
+                        label={course.price > 0 ? formatVnd(course.price) : t("landing.featuredCoursesFree")}
+                        sx={{
+                          fontWeight: 700,
+                          bgcolor: (theme) => alpha(theme.palette.secondary.main, 0.1),
+                          color: "secondary.main",
+                        }}
+                      />
+                    </Stack>
+                  </Stack>
+                </Stack>
+
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  {course.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    mt: 0.5,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {course.description ?? t("landing.featuredCoursesNoDescription")}
+                </Typography>
+
+                <Stack direction="row" spacing={0.5} sx={{ mt: 1.5, alignItems: "center" }}>
+                  <PersonRoundedIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="caption" color="text.secondary">
+                    {course.teacherName}
+                  </Typography>
+                </Stack>
+
+                <Box sx={{ mt: "auto", pt: 2.5 }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    endIcon={<ArrowForwardRoundedIcon />}
+                    onClick={handleRegisterClick}
+                    sx={{ borderRadius: 2.5, fontWeight: 700, py: 1.1 }}
+                  >
+                    {t("landing.featuredCoursesCta")}
+                  </Button>
+                </Box>
+              </Card>
+            ))}
+          </Box>
+        )}
       </Container>
 
       <Container id="practice" maxWidth="lg" sx={{ pb: { xs: 8, md: 12 } }}>

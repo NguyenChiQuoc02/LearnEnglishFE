@@ -12,10 +12,12 @@ import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
 import ThemeModeToggle from "@/app/components/shared/ThemeModeToggle";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { getAuth } from "@/app/utils/auth-storage";
+import { usePageTitle } from "@/app/utils/usePageTitle";
 
 export default function CoursesLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { t } = useTranslation();
+  usePageTitle(t("landing.navCourses"));
 
   useEffect(() => {
     if (!getAuth()) {
@@ -38,7 +40,7 @@ export default function CoursesLayout({ children }: { children: React.ReactNode 
         <Toolbar sx={{ gap: 2 }}>
           <Typography
             component={Link}
-            href="/courses"
+            href="/courses-public"
             variant="h6"
             sx={{ fontWeight: 800, flexGrow: 1, color: "inherit", textDecoration: "none" }}
           >

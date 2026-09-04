@@ -461,7 +461,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
       <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", p: 2 }}>
         <Stack spacing={2} sx={{ alignItems: "center", textAlign: "center" }}>
           <Typography color="error">{error}</Typography>
-          <Button variant="contained" onClick={() => router.push("/courses")}>
+          <Button variant="contained" onClick={() => router.push("/courses-public")}>
             {t("learnSession.backToCoursesButton")}
           </Button>
         </Stack>
@@ -484,7 +484,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
         correctCount={completion?.correctCount ?? correctCount}
         wrongCount={completion?.wrongCount ?? wrongCount}
         score={completion?.scoreEarned ?? score}
-        onBack={() => router.push("/courses")}
+        onBack={() => router.push("/courses-public")}
         loading={!completion}
       />
     );
@@ -497,7 +497,7 @@ function RealLearningSession({ courseId }: { courseId: string }) {
       headerTitle={`${course.title} - ${course.teacherName.toUpperCase()}`}
       progress={progress}
       score={score}
-      onExit={() => router.push("/courses")}
+      onExit={() => router.push("/courses-public")}
       illustration={
         currentWord.imageUrl ? (
           <Box

@@ -40,6 +40,7 @@ import { useToast } from "@/app/components/shared/ToastContext";
 import { listCourses } from "@/app/services/course.service";
 import { enrollCourse, listMyEnrollments } from "@/app/services/enrollment.service";
 import { getMyWallet } from "@/app/services/wallet.service";
+import { getAuth } from "@/app/utils/auth-storage";
 import type { CourseResponse, EnrollmentResponse } from "@/app/types";
 
 const PAGE_SIZE = 8;
@@ -114,6 +115,14 @@ export default function CoursesCatalogPage() {
   }
 
   useEffect(() => {
+    // The layout's own auth check doesn't stop this page from mounting and fetching data
+    // (layouts don't gate route rendering here), so the guard has to live where the fetch
+    // actually happens — otherwise an unauthenticated visitor briefly sees the real catalog
+    // fetched from the public /api/courses endpoint before the layout's redirect lands.
+    if (!getAuth()) {
+      router.replace("/login");
+      return;
+    }
     loadCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -190,6 +199,101 @@ export default function CoursesCatalogPage() {
 
   return (
     <Stack spacing={3}>
+      {courses && courses.length > 0 && (
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+            {t("publicCourses.featuredTitle")}
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 1 }}>
+            {courses.slice(0, 6).map((course) => {
+              const enrollment = enrollments[course.id];
+              const isEnrolling = enrollingId === course.id;
+              const placeholder = PLACEHOLDER_THUMBNAILS[course.id % PLACEHOLDER_THUMBNAILS.length];
+              const PlaceholderIcon = placeholder.icon;
+
+              return (
+                <Card
+                  key={course.id}
+                  variant="outlined"
+                  sx={{
+                    minWidth: 220,
+                    maxWidth: 220,
+                    flexShrink: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: 4,
+                    p: 2,
+                  }}
+                >
+                  <Stack direction="row" spacing={1.5} sx={{ mb: 1.5, alignItems: "center" }}>
+                    {course.thumbnailUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- remote Cloudinary/MinIO URL, no next/image domain config in this project
+                      <img
+                        src={course.thumbnailUrl}
+                        alt={course.title}
+                        style={{ width: 44, height: 44, borderRadius: 12, objectFit: "cover", flexShrink: 0 }}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: "12px",
+                          flexShrink: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          bgcolor: placeholder.bg,
+                        }}
+                      >
+                        <PlaceholderIcon sx={{ color: placeholder.fg, fontSize: 22 }} />
+                      </Box>
+                    )}
+                    <Chip
+                      size="small"
+                      label={course.price > 0 ? formatVnd(course.price) : t("publicCourses.free")}
+                      sx={{ fontWeight: 700 }}
+                    />
+                  </Stack>
+
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 700,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {course.title}
+                  </Typography>
+
+                  <Box sx={{ mt: "auto", pt: 1.5 }}>
+                    <Button
+                      fullWidth
+                      size="small"
+                      variant={enrollment ? "outlined" : "contained"}
+                      disabled={isEnrolling}
+                      onClick={() => (enrollment ? router.push(`/learn/${course.id}`) : handleEnroll(course))}
+                      sx={{ borderRadius: 2, fontWeight: 700 }}
+                    >
+                      {enrollment
+                        ? t("publicCourses.startLearning")
+                        : isEnrolling
+                          ? t("publicCourses.enrolling")
+                          : course.price > 0
+                            ? t("publicCourses.buyNow")
+                            : t("publicCourses.enroll")}
+                    </Button>
+                  </Box>
+                </Card>
+              );
+            })}
+          </Box>
+        </Box>
+      )}
+
       <Box
         sx={{
           py: { xs: 2.5, md: 3 },

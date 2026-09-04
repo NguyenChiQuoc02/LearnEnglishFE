@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { alpha, useTheme } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
@@ -26,7 +27,7 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import { changePassword } from "@/app/services/auth.service";
 import { getMyProfile, updateMyProfile } from "@/app/services/user.service";
 import { generateZaloLinkCode, getMyZaloStatus } from "@/app/services/zalo.service";
-import { useAuth } from "@/app/utils/auth-storage";
+import { getAuth, useAuth } from "@/app/utils/auth-storage";
 import ImageUploadField from "@/app/components/shared/ImageUploadField";
 import ProvinceWardSelect from "@/app/components/shared/ProvinceWardSelect";
 import ZoomableAvatar from "@/app/components/shared/ZoomableAvatar";
@@ -37,11 +38,18 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const auth = useAuth();
   const theme = useTheme();
+  const router = useRouter();
   const [profile, setProfile] = useState<UserResponse | null>(null);
 
   useEffect(() => {
+    // The layout's auth check alone doesn't stop this page from mounting and fetching data
+    // (layouts don't gate route rendering here), so guard the fetch itself too.
+    if (!getAuth()) {
+      router.replace("/login");
+      return;
+    }
     getMyProfile().then(setProfile);
-  }, []);
+  }, [router]);
 
   return (
     <Stack spacing={3} sx={{ maxWidth: 640, mx: "auto" }}>

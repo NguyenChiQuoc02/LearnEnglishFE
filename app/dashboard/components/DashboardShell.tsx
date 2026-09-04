@@ -1,15 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { navItems } from "./nav-items";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
+import { usePageTitle } from "@/app/utils/usePageTitle";
 
 export const DRAWER_WIDTH = 260;
+
+function getActiveNavLabelKey(pathname: string | null) {
+  for (const item of navItems) {
+    if (item.children?.some((child) => pathname?.startsWith(child.href))) {
+      return item.children.find((child) => pathname?.startsWith(child.href))!.labelKey;
+    }
+    if (item.href === "/dashboard" ? pathname === item.href : pathname?.startsWith(item.href)) {
+      return item.labelKey;
+    }
+  }
+  return "dashboard";
+}
 
 export default function DashboardShell({
   children,
@@ -18,13 +33,17 @@ export default function DashboardShell({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const { t } = useTranslation();
+
+  usePageTitle(t(`dashboardNav.${getActiveNavLabelKey(pathname)}`));
 
   useEffect(() => {
     const auth = getAuth();
     if (!auth) {
       router.replace("/login");
     } else if (!isAdmin(auth)) {
-      router.replace("/courses");
+      router.replace("/courses-public");
     }
   }, [router]);
 

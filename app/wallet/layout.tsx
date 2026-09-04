@@ -15,10 +15,12 @@ import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
 import ThemeModeToggle from "@/app/components/shared/ThemeModeToggle";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
+import { usePageTitle } from "@/app/utils/usePageTitle";
 
 export default function WalletLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { t } = useTranslation();
+  usePageTitle(t("userMenu.wallet"));
 
   useEffect(() => {
     if (!getAuth()) {
@@ -27,10 +29,10 @@ export default function WalletLayout({ children }: { children: React.ReactNode }
   }, [router]);
 
   function handleBack() {
-    router.push(isAdmin(getAuth()) ? "/dashboard" : "/courses");
+    router.push(isAdmin(getAuth()) ? "/dashboard" : "/courses-public");
   }
 
-  const homeHref = isAdmin(getAuth()) ? "/dashboard" : "/courses";
+  const homeHref = isAdmin(getAuth()) ? "/dashboard" : "/courses-public";
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
