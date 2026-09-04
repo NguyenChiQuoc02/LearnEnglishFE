@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -7,6 +8,7 @@ import { alpha } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Collapse from "@mui/material/Collapse";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -14,14 +16,72 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import { getMyProfile } from "@/app/services/user.service";
 import { useAuth } from "@/app/utils/auth-storage";
 import { navItems } from "./nav-items";
+
+const itemSx = (selected: boolean) => ({
+  borderRadius: 2,
+  mb: 0.5,
+  position: "relative",
+  color: alpha("#ffffff", 0.85),
+  "& .MuiListItemIcon-root": {
+    color: alpha("#ffffff", 0.7),
+  },
+  "&:hover": {
+    bgcolor: alpha("#ffffff", 0.08),
+  },
+  ...(selected && {
+    bgcolor: alpha("#000000", 0.28),
+    color: "primary.contrastText",
+    fontWeight: 700,
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      top: 6,
+      bottom: 6,
+      width: 4,
+      borderRadius: 4,
+      bgcolor: "common.white",
+    },
+    "& .MuiListItemIcon-root": {
+      color: "primary.contrastText",
+    },
+    "&:hover": {
+      bgcolor: alpha("#000000", 0.34),
+    },
+  }),
+});
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { t } = useTranslation();
   const auth = useAuth();
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!auth) return;
+    getMyProfile()
+      .then((profile) => setAvatarUrl(profile.avatarUrl))
+      .catch(() => setAvatarUrl(null));
+  }, [auth]);
+
+  useEffect(() => {
+    setOpenGroups((prev) => {
+      const next = { ...prev };
+      navItems.forEach((item) => {
+        if (item.children?.some((child) => pathname?.startsWith(child.href))) {
+          next[item.labelKey] = true;
+        }
+      });
+      return next;
+    });
+  }, [pathname]);
 
   return (
     <Box
@@ -41,7 +101,52 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </Toolbar>
       <Divider sx={{ borderColor: alpha("#ffffff", 0.16) }} />
       <List sx={{ px: 1, py: 2, flex: 1 }}>
-        {navItems.map(({ labelKey, href, icon: Icon }) => {
+        {navItems.map(({ labelKey, href, icon: Icon, children }) => {
+          if (children?.length) {
+            const isOpen = Boolean(openGroups[labelKey]);
+            const groupSelected = children.some((child) => pathname?.startsWith(child.href));
+
+            return (
+              <Box key={labelKey}>
+                <ListItemButton
+                  onClick={() => setOpenGroups((prev) => ({ ...prev, [labelKey]: !prev[labelKey] }))}
+                  sx={itemSx(groupSelected && !isOpen)}
+                >
+                  <ListItemIcon sx={{ minWidth: 40 }}>
+                    <Icon />
+                  </ListItemIcon>
+                  <ListItemText primary={t(`dashboardNav.${labelKey}`)} />
+                  {isOpen ? <ExpandLessRoundedIcon fontSize="small" /> : <ExpandMoreRoundedIcon fontSize="small" />}
+                </ListItemButton>
+                <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding sx={{ pl: 2 }}>
+                    {children.map((child) => {
+                      const childSelected = pathname?.startsWith(child.href);
+                      return (
+                        <ListItemButton
+                          key={child.href}
+                          component={Link}
+                          href={child.href}
+                          selected={childSelected}
+                          onClick={onNavigate}
+                          sx={itemSx(Boolean(childSelected))}
+                        >
+                          <ListItemIcon sx={{ minWidth: 36 }}>
+                            <child.icon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={t(`dashboardNav.${child.labelKey}`)}
+                            slotProps={{ primary: { sx: { fontSize: 14 } } }}
+                          />
+                        </ListItemButton>
+                      );
+                    })}
+                  </List>
+                </Collapse>
+              </Box>
+            );
+          }
+
           const selected = href === "/dashboard" ? pathname === href : pathname?.startsWith(href);
 
           return (
@@ -51,28 +156,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               href={href}
               selected={selected}
               onClick={onNavigate}
-              sx={{
-                borderRadius: 2,
-                mb: 0.5,
-                color: alpha("#ffffff", 0.85),
-                "& .MuiListItemIcon-root": {
-                  color: alpha("#ffffff", 0.7),
-                },
-                "&:hover": {
-                  bgcolor: alpha("#ffffff", 0.08),
-                },
-                "&.Mui-selected": {
-                  bgcolor: alpha("#ffffff", 0.18),
-                  color: "primary.contrastText",
-                  fontWeight: 700,
-                  "& .MuiListItemIcon-root": {
-                    color: "primary.contrastText",
-                  },
-                  "&:hover": {
-                    bgcolor: alpha("#ffffff", 0.24),
-                  },
-                },
-              }}
+              sx={itemSx(Boolean(selected))}
             >
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <Icon />
@@ -96,7 +180,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             p: 1.5,
           }}
         >
-          <Avatar sx={{ width: 40, height: 40, bgcolor: alpha("#ffffff", 0.2) }}>
+          <Avatar src={avatarUrl || undefined} sx={{ width: 40, height: 40, bgcolor: alpha("#ffffff", 0.2) }}>
             {auth?.username?.[0]?.toUpperCase() ?? "?"}
           </Avatar>
           <Box sx={{ minWidth: 0 }}>

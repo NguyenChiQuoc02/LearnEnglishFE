@@ -4,6 +4,7 @@ export * from "./common.types";
 export * from "./course.types";
 export * from "./enrollment.types";
 export * from "./export.types";
+export * from "./minio.types";
 export * from "./notification.types";
 export * from "./session.types";
 export * from "./user.types";

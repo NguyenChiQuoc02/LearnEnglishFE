@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -16,6 +16,7 @@ import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceW
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { useTranslation } from "react-i18next";
+import { getMyProfile } from "@/app/services/user.service";
 import { clearAuth, useAuth } from "@/app/utils/auth-storage";
 
 export default function UserMenu() {
@@ -23,7 +24,15 @@ export default function UserMenu() {
   const { t } = useTranslation();
   const auth = useAuth();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const menuOpen = Boolean(anchorEl);
+
+  useEffect(() => {
+    if (!auth) return;
+    getMyProfile()
+      .then((profile) => setAvatarUrl(profile.avatarUrl))
+      .catch(() => setAvatarUrl(null));
+  }, [auth]);
 
   function handleAvatarClick(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
@@ -54,6 +63,7 @@ export default function UserMenu() {
       <Tooltip title={auth?.username ?? t("userMenu.account")}>
         <IconButton onClick={handleAvatarClick} sx={{ p: 0 }}>
           <Avatar
+            src={avatarUrl || undefined}
             sx={{
               width: 36,
               height: 36,

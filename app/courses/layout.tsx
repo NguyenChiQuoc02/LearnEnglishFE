@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
+import ThemeModeToggle from "@/app/components/shared/ThemeModeToggle";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { getAuth } from "@/app/utils/auth-storage";
 
@@ -43,6 +44,7 @@ export default function CoursesLayout({ children }: { children: React.ReactNode 
           >
             {t("publicCourses.brand")}
           </Typography>
+          <ThemeModeToggle />
           <LanguageSwitcher />
           <UserMenu />
         </Toolbar>

@@ -12,6 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
+import ThemeModeToggle from "@/app/components/shared/ThemeModeToggle";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { getAuth, isAdmin } from "@/app/utils/auth-storage";
 
@@ -56,6 +57,7 @@ export default function WalletLayout({ children }: { children: React.ReactNode }
           >
             {t("wallet.brand")}
           </Typography>
+          <ThemeModeToggle />
           <LanguageSwitcher />
           <UserMenu />
         </Toolbar>

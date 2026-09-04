@@ -22,8 +22,15 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/app/components/shared/LanguageSwitcher";
 import ThemeColorPicker from "@/app/components/shared/ThemeColorPicker";
+import ThemeModeToggle from "@/app/components/shared/ThemeModeToggle";
 import UserMenu from "@/app/components/shared/UserMenu";
 import { navItems } from "./nav-items";
+
+const flatNavItems = navItems.flatMap((item) =>
+  item.children?.length
+    ? item.children.map((child) => ({ labelKey: child.labelKey, href: child.href, icon: child.icon }))
+    : [{ labelKey: item.labelKey, href: item.href, icon: item.icon }]
+);
 
 export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const { t } = useTranslation();
@@ -129,6 +136,8 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
           </IconButton>
         </Tooltip>
 
+        <ThemeModeToggle />
+
         <ThemeColorPicker />
 
         <LanguageSwitcher />
@@ -148,7 +157,7 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
           "&::-webkit-scrollbar": { display: "none" },
         }}
       >
-        {navItems.map(({ labelKey, href, icon: Icon }) => {
+        {flatNavItems.map(({ labelKey, href, icon: Icon }) => {
           const selected = href === "/dashboard" ? pathname === href : pathname?.startsWith(href);
 
           return (

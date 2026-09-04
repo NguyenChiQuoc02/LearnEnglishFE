@@ -52,6 +52,11 @@ export const API_ENDPOINTS = {
   CACHE_TEST: {
     CLEAR: "/cache-test/clear",
   },
+  MINIO: {
+    UPLOAD: "/minio/upload",
+    FILES: "/minio/files",
+    FILE_DETAIL: (objectName: string) => `/minio/files/${encodeURIComponent(objectName)}`,
+  },
   NOTIFICATIONS: {
     BASE: "/notifications",
     DETAIL: (id: number | string) => `/notifications/${id}`,

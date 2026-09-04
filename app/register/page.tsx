@@ -9,9 +9,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import { useToast } from "@/app/components/shared/ToastContext";
 import { register } from "@/app/services/auth.service";
 
@@ -64,6 +67,7 @@ export default function RegisterPage() {
   return (
     <Box
       sx={{
+        position: "relative",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
@@ -72,6 +76,17 @@ export default function RegisterPage() {
         p: 2,
       }}
     >
+      <Tooltip title={t("common.backToHome")}>
+        <IconButton
+          component={Link}
+          href="/"
+          aria-label={t("common.backToHome")}
+          sx={{ position: "absolute", top: 16, left: 16 }}
+        >
+          <HomeRoundedIcon />
+        </IconButton>
+      </Tooltip>
+
       <Card variant="outlined" sx={{ width: "100%", maxWidth: 420 }}>
         <CardContent sx={{ p: 4 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, mb: 0.5 }}>
