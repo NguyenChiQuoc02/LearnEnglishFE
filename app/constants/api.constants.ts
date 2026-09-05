@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     SIGNIN: "/auth/signin",
     SIGNUP: "/auth/signup",
+    GOOGLE: "/auth/google",
   },
   COURSES: {
     BASE: "/courses",

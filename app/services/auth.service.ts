@@ -8,6 +8,12 @@ export function login(username: string, password: string) {
     .then((res) => res.data);
 }
 
+export function loginWithGoogle(idToken: string) {
+  return axiosClient
+    .post<JwtResponse>(API_ENDPOINTS.AUTH.GOOGLE, { idToken })
+    .then((res) => res.data);
+}
+
 export function register(username: string, email: string, password: string) {
   return axiosClient
     .post<MessageResponse>(API_ENDPOINTS.AUTH.SIGNUP, { username, email, password })

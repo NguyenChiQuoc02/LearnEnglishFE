@@ -520,6 +520,8 @@
     "errorUsernameRequired": "Please enter your username",
     "errorPasswordRequired": "Please enter your password",
     "errorGeneric": "Login failed",
+    "errorGoogleGeneric": "Google sign-in failed",
+    "orContinueWith": "Or",
     "noAccount": "Don't have an account?",
     "registerNow": "Sign up now"
   },

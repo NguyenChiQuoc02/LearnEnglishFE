@@ -520,6 +520,8 @@
     "errorUsernameRequired": "Vui lòng nhập tên đăng nhập",
     "errorPasswordRequired": "Vui lòng nhập mật khẩu",
     "errorGeneric": "Đăng nhập thất bại",
+    "errorGoogleGeneric": "Đăng nhập bằng Google thất bại",
+    "orContinueWith": "Hoặc",
     "noAccount": "Chưa có tài khoản?",
     "registerNow": "Đăng ký ngay"
   },

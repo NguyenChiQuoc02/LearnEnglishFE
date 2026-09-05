@@ -14,13 +14,15 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import { login } from "@/app/services/auth.service";
+import { login, loginWithGoogle } from "@/app/services/auth.service";
 import { getAuth, isAdmin, saveAuth } from "@/app/utils/auth-storage";
+import GoogleSignInButton from "@/app/components/shared/GoogleSignInButton";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -55,6 +57,24 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleGoogleCredential(idToken: string) {
+    setError(null);
+    setLoading(true);
+    try {
+      const auth = await loginWithGoogle(idToken);
+      saveAuth(auth);
+      router.push(isAdmin(auth) ? "/dashboard" : "/courses-public");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("login.errorGoogleGeneric"));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleGoogleError() {
+    setError(t("login.errorGoogleGeneric"));
   }
 
   return (
@@ -123,6 +143,17 @@ export default function LoginPage() {
               </Button>
             </Stack>
           </Box>
+
+          {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+            <>
+              <Divider sx={{ my: 3 }}>{t("login.orContinueWith")}</Divider>
+              <GoogleSignInButton
+                onCredential={handleGoogleCredential}
+                onError={handleGoogleError}
+                locale={i18n.language}
+              />
+            </>
+          )}
 
           <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
             {t("login.noAccount")}{" "}
